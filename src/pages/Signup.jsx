@@ -3,6 +3,20 @@ import { useState } from "react";
 import styled from "styled-components";
 import { auth } from "../utils/firebase";
 import { Link, useNavigate } from "react-router-dom";
+import useInput from "../hooks/useInput";
+
+const InputWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 80px;
+`;
+const ErrText = styled.p`
+  color: #c14454;
+  font-size: 0.7rem;
+  margin-left: 5px;
+  margin-top: 5px;
+`;
 
 const Wrap = styled.div`
   width: 100%;
@@ -51,10 +65,9 @@ const Lable = styled.label`
 `;
 const Input = styled.input`
   height: 40px;
-  border: 1px solid #e0e0e0;
   border-radius: 15px;
   padding: 6px;
-  margin-bottom: 14px;
+  border: 1px solid ${({ $hasErr }) => ($hasErr ? "red" : "#e0e0e0")};
   &:focus {
     border: 1px solid #85d6d3;
     outline: none;
@@ -80,42 +93,71 @@ const Linkbtn = styled.p`
 `;
 
 const Signup = () => {
-  const navigate = useNavigate();
-  const [userName, setuserName] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const onChange = (e) => {
-    const {
-      target: { name },
-    } = e;
-    const {
-      target: { value },
-    } = e;
-    if (name === "email") {
-      setEmail(value);
-    }
-    if (name === "password") {
-      setPassword(value);
-    }
-    if (name === "nickname") {
-      setuserName(value);
-    }
-  };
+  const {
+    enterdValue: enteredEmail,
+    enteredValueIsValid: enteredEmail_valid,
+    hasErr: emailhaserr,
+    onChange: onChangeEmail,
+    onBlur: onBlurEmail,
+    reset: resetEmail,
+  } = useInput((value) => value.includes("@"));
+  const {
+    enterdValue: enteredNN,
+    enteredValueIsValid: enteredNN_valid,
+    hasErr: enteredNN_hasErr,
+    onChange: onChangeNN,
+    onBlur: onBlurNN,
+    reset: resetNN,
+  } = useInput((value) => value.length >= 2);
+  const {
+    enterdValue: enteredPW,
+    enteredValueIsValid: enteredPW_valid,
+    hasErr: enteredPW_hasErr,
+    onChange: onChangePW,
+    onBlur: onBlurPW,
+    reset: resetPW,
+  } = useInput((value) => value.length > 6);
+  const {
+    enterdValue: enteredPWC,
+    enteredValueIsValid: enteredPWC_valid,
+    hasErr: enteredPWC_hasErr,
+    onChange: onChangePWC,
+    onBlur: onBlurPWC,
+    reset: resetPWC,
+  } = useInput((value) => value === enteredPW);
+
+  //form 유효성검사 체크
+  let formIsValid = false;
+  if (
+    enteredEmail_valid &&
+    enteredNN_valid &&
+    enteredPW_valid &&
+    enteredPWC_valid
+  ) {
+    formIsValid = true;
+  } else {
+    formIsValid = false;
+  }
+
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (userName === "" || email === "" || password === "") return;
+    if (!formIsValid) return;
     try {
       const credentials = await createUserWithEmailAndPassword(
         auth,
-        email,
-        password
+        enteredEmail,
+        enteredPW
       );
       console.log(credentials);
-      await updateProfile(credentials.user, { displayName: userName });
+      await updateProfile(credentials.user, { displayName: enteredNN });
     } catch (e) {
       console.log(e);
     }
-    console.log(userName, password, email);
+    console.log(enteredEmail, enteredNN, enteredPW);
+    resetEmail();
+    resetNN();
+    resetPW();
+    resetPWC();
   };
   return (
     <Wrap>
@@ -124,38 +166,59 @@ const Signup = () => {
           <h1>Moment</h1>
           <em>순간을 기록하다📸</em>
         </Title>
-        <Lable>Email</Lable>
-        <Input
-          type="email"
-          placeholder="이메일을 입력해 주세요"
-          value={email}
-          onChange={onChange}
-          name="email"
-        />
-        <Lable>Nickname</Lable>
-        <Input
-          type="text"
-          placeholder="닉네임을 입력해 주세요"
-          value={userName}
-          onChange={onChange}
-          name="nickname"
-        />
-        <Lable>Password</Lable>
-        <Input
-          type="password"
-          placeholder="비밀번호"
-          value={password}
-          onChange={onChange}
-          name="password"
-        />
-        <Lable>Password confrim</Lable>
-        <Input
-          type="password"
-          placeholder="비밀번호"
-          value={password}
-          onChange={onChange}
-          name="password"
-        />
+
+        <InputWrap>
+          <Lable>Email</Lable>
+          <Input
+            $hasErr={emailhaserr}
+            type="email"
+            placeholder="이메일을 입력해 주세요"
+            value={enteredEmail}
+            onChange={onChangeEmail}
+            onBlur={onBlurEmail}
+          />
+          {emailhaserr && (
+            <ErrText>올바른 이메일 형식으로 입력해주세요!</ErrText>
+          )}
+        </InputWrap>
+        <InputWrap>
+          <Lable>Nickname</Lable>
+          <Input
+            $hasErr={enteredNN_hasErr}
+            type="text"
+            placeholder="닉네임을 입력해 주세요"
+            value={enteredNN}
+            onChange={onChangeNN}
+            onBlur={onBlurNN}
+          />
+          {enteredNN_hasErr && <ErrText>최소 2글자 이상 작성해주세요</ErrText>}
+        </InputWrap>
+        <InputWrap>
+          <Lable>Password</Lable>
+          <Input
+            $hasErr={enteredPW_hasErr}
+            type="password"
+            placeholder="비밀번호"
+            value={enteredPW}
+            onChange={onChangePW}
+            onBlur={onBlurPW}
+          />
+          {enteredPW_hasErr && <ErrText>최소 6글자 이상 작성해주세요</ErrText>}
+        </InputWrap>
+        <InputWrap>
+          <Lable>Password confirm</Lable>
+          <Input
+            $hasErr={enteredPWC_hasErr}
+            type="password"
+            placeholder="비밀번호"
+            value={enteredPWC}
+            onChange={onChangePWC}
+            onBlur={onBlurPWC}
+          />
+          {enteredPWC_hasErr && (
+            <ErrText>비밀번호가 일치하지 않습니다.</ErrText>
+          )}
+        </InputWrap>
         <Button>가입</Button>
       </Form>
       <Linkbtn>
