@@ -1,98 +1,23 @@
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { useState } from "react";
-import styled from "styled-components";
 import { auth } from "../utils/firebase";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useInput from "../hooks/useInput";
-
-const InputWrap = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 80px;
-`;
-const ErrText = styled.p`
-  color: #c14454;
-  font-size: 0.7rem;
-  margin-left: 5px;
-  margin-top: 5px;
-`;
-
-const Wrap = styled.div`
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-`;
-const Title = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 50px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  h1 {
-    font-size: 3rem;
-    line-height: 3rem;
-  }
-  em {
-    font-size: 0.8rem;
-    font-style: normal;
-    text-align: end;
-  }
-`;
-const Form = styled.form`
-  width: 20%;
-  height: 80%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  @media (max-width: 800px) {
-    width: 80%;
-  }
-`;
-const Lable = styled.label`
-  font-size: 0.8rem;
-  margin-left: 8px;
-  margin-bottom: 4px;
-  font-weight: bold;
-  color: #050f07;
-`;
-const Input = styled.input`
-  height: 40px;
-  border-radius: 15px;
-  padding: 6px;
-  border: 1px solid ${({ $hasErr }) => ($hasErr ? "red" : "#e0e0e0")};
-  &:focus {
-    border: 1px solid #85d6d3;
-    outline: none;
-  }
-`;
-const Button = styled.button`
-  border: none;
-  border-radius: 5px;
-  height: 30px;
-  background-color: #85d6d3;
-  color: #eee;
-  font-weight: bold;
-  cursor: pointer;
-`;
-const Linkbtn = styled.p`
-  a {
-    text-decoration: none;
-    color: #050f07;
-  }
-
-  text-decoration: underline;
-  cursor: pointer;
-`;
+import { useState } from "react";
+import {
+  Button,
+  CompleteText,
+  ErrText,
+  Form,
+  Input,
+  InputWrap,
+  Lable,
+  Linkbtn,
+  Title,
+  Wrap,
+} from "../assets/styled_component/login-signup";
 
 const Signup = () => {
+  const [loading, setLoading] = useState(false);
   const {
     enterdValue: enteredEmail,
     enteredValueIsValid: enteredEmail_valid,
@@ -116,7 +41,7 @@ const Signup = () => {
     onChange: onChangePW,
     onBlur: onBlurPW,
     reset: resetPW,
-  } = useInput((value) => value.length > 6);
+  } = useInput((value) => value.trim() !== "" && value.length > 6);
   const {
     enterdValue: enteredPWC,
     enteredValueIsValid: enteredPWC_valid,
@@ -124,6 +49,7 @@ const Signup = () => {
     onChange: onChangePWC,
     onBlur: onBlurPWC,
     reset: resetPWC,
+    complate: complatePWC,
   } = useInput((value) => value === enteredPW);
 
   //form 유효성검사 체크
@@ -142,6 +68,7 @@ const Signup = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!formIsValid) return;
+    setLoading(true);
     try {
       const credentials = await createUserWithEmailAndPassword(
         auth,
@@ -152,6 +79,8 @@ const Signup = () => {
       await updateProfile(credentials.user, { displayName: enteredNN });
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading(false);
     }
     console.log(enteredEmail, enteredNN, enteredPW);
     resetEmail();
@@ -166,9 +95,8 @@ const Signup = () => {
           <h1>Moment</h1>
           <em>순간을 기록하다📸</em>
         </Title>
-
         <InputWrap>
-          <Lable>Email</Lable>
+          <Lable>이메일</Lable>
           <Input
             $hasErr={emailhaserr}
             type="email"
@@ -176,13 +104,14 @@ const Signup = () => {
             value={enteredEmail}
             onChange={onChangeEmail}
             onBlur={onBlurEmail}
+            required
           />
           {emailhaserr && (
             <ErrText>올바른 이메일 형식으로 입력해주세요!</ErrText>
           )}
         </InputWrap>
         <InputWrap>
-          <Lable>Nickname</Lable>
+          <Lable>닉네임</Lable>
           <Input
             $hasErr={enteredNN_hasErr}
             type="text"
@@ -190,11 +119,12 @@ const Signup = () => {
             value={enteredNN}
             onChange={onChangeNN}
             onBlur={onBlurNN}
+            required
           />
           {enteredNN_hasErr && <ErrText>최소 2글자 이상 작성해주세요</ErrText>}
         </InputWrap>
         <InputWrap>
-          <Lable>Password</Lable>
+          <Lable>비밀번호</Lable>
           <Input
             $hasErr={enteredPW_hasErr}
             type="password"
@@ -202,11 +132,12 @@ const Signup = () => {
             value={enteredPW}
             onChange={onChangePW}
             onBlur={onBlurPW}
+            required
           />
           {enteredPW_hasErr && <ErrText>최소 6글자 이상 작성해주세요</ErrText>}
         </InputWrap>
         <InputWrap>
-          <Lable>Password confirm</Lable>
+          <Lable>비밀번호 확인</Lable>
           <Input
             $hasErr={enteredPWC_hasErr}
             type="password"
@@ -214,12 +145,16 @@ const Signup = () => {
             value={enteredPWC}
             onChange={onChangePWC}
             onBlur={onBlurPWC}
+            required
           />
           {enteredPWC_hasErr && (
             <ErrText>비밀번호가 일치하지 않습니다.</ErrText>
           )}
+          {complatePWC && <CompleteText>비밀번호가 일치합니다✅</CompleteText>}
         </InputWrap>
-        <Button>가입</Button>
+        <Button disabled={loading}>
+          {loading ? "회원 생성중..👷‍♂️" : "회원가입"}
+        </Button>
       </Form>
       <Linkbtn>
         <Link to="/login">이미 아이디가 있으신가요?</Link>
