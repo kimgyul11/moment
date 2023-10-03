@@ -1,26 +1,8 @@
 import { GithubAuthProvider, signInWithPopup } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
+
 import { auth } from "../utils/firebase";
-import { Container } from "../assets/styled_component/social-btn";
-
-const Button = styled.span`
-  background-color: white;
-  border: 1px solid #e0e0e0;
-  width: 50px;
-  height: 50px;
-
-  font-weight: 500;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 6px;
-  cursor: pointer;
-`;
-const Logo = styled.img`
-  height: 25px;
-`;
+import { Container, Logo } from "../assets/styled_component/social-btn";
 
 const GithubBtn = () => {
   const navigate = useNavigate();

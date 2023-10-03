@@ -1,5 +1,4 @@
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import styled from "styled-components";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { Container, Logo } from "../assets/styled_component/social-btn";

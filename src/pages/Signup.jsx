@@ -1,6 +1,6 @@
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../utils/firebase";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useInput from "../hooks/useInput";
 import { useState } from "react";
 import {
@@ -17,6 +17,7 @@ import {
 } from "../assets/styled_component/login-signup";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const {
     enterdValue: enteredEmail,
@@ -77,16 +78,17 @@ const Signup = () => {
       );
       console.log(credentials);
       await updateProfile(credentials.user, { displayName: enteredNN });
+      navigate("/login");
     } catch (e) {
       console.log(e);
     } finally {
       setLoading(false);
     }
-    console.log(enteredEmail, enteredNN, enteredPW);
-    resetEmail();
-    resetNN();
-    resetPW();
-    resetPWC();
+
+    // resetEmail();
+    // resetNN();
+    // resetPW();
+    // resetPWC();
   };
   return (
     <Wrap>
