@@ -1,10 +1,11 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { auth } from "../utils/firebase";
 
 const Nav = styled.div`
   min-width: 80px;
   max-width: 80px;
-  border-right: 2px solid #e0e0e0;
-
+  background-color: #85d6d3;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -14,8 +15,6 @@ const Nav = styled.div`
     max-width: 100%;
     height: 90px;
     flex-direction: row;
-    border-right: none;
-    border-bottom: 1px solid #e0e0e0;
   }
 `;
 const Menu = styled.div`
@@ -31,17 +30,32 @@ const Item = styled.div`
   align-items: center;
   width: 50px;
   height: 50px;
-  border: 1px solid #e0e0e0;
+  background-color: #fff;
   margin: 15px;
   border-radius: 50%;
   cursor: pointer;
 `;
+
+const Img = styled.img`
+  height: 35px;
+`;
 const Navbar = () => {
+  const user = auth.currentUser;
   return (
     <Nav>
       <Menu>
-        <Item>홈화면</Item>
-        <Item>프로필</Item>
+        <Link to="/">
+          <Item>HOME</Item>
+        </Link>
+        <Link to="/profile">
+          <Item>
+            {user.photoURL ? (
+              <Img src={user.photoURL} />
+            ) : (
+              <Img src="/navProfile.png" />
+            )}
+          </Item>
+        </Link>
         <Item>글쓰기</Item>
       </Menu>
       <Item>로그아웃</Item>
