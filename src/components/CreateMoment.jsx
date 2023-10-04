@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import styled from "styled-components";
 import { auth, db, storage } from "../utils/firebase";
+import dayjs from "dayjs";
 import {
   addDoc,
   collection,
@@ -9,6 +10,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { useModalContext } from "../context/ModalContext";
 
 const Form = styled.form`
   display: flex;
@@ -87,6 +89,7 @@ const CreateMoment = () => {
   const [isLoading, setLoading] = useState(false);
   const [text, setText] = useState("");
   const [file, setFile] = useState(null);
+  const [showImg, setShowImg] = useState("");
   const imgRef = useRef();
   const user = auth.currentUser;
 
@@ -103,11 +106,12 @@ const CreateMoment = () => {
 
   //이미지 미리보기를 위해서 FileReader사용
   const saveImgFile = () => {
-    const file = imgRef.current.files[0];
+    const selectedFile = imgRef.current.files[0];
+    setFile(selectedFile);
     const reader = new FileReader();
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(selectedFile);
     reader.onloadend = () => {
-      setFile(reader.result);
+      setShowImg(reader.result);
     };
   };
 
@@ -117,6 +121,7 @@ const CreateMoment = () => {
 
     try {
       setLoading(true);
+
       const imgMaxSize = 1024 * 1024;
       const docs = await addDoc(collection(db, "moment"), {
         text,
@@ -131,9 +136,11 @@ const CreateMoment = () => {
         await deleteDoc(doc(db, "moment", docs.id));
         setText("");
         setFile(null);
+        setShowImg(null);
         return;
       }
       //이미지가 알맞는 경우 업데이트를 한다.
+
       if (file && file.size < imgMaxSize) {
         const locationRef = ref(
           storage,
@@ -147,6 +154,7 @@ const CreateMoment = () => {
       }
       setText("");
       setFile(null);
+      setShowImg(null);
     } catch (e) {
       console.log(e);
     } finally {
@@ -156,9 +164,9 @@ const CreateMoment = () => {
   return (
     <Form onSubmit={onSubmit}>
       <Imgbox>
-        {!file && <label htmlFor="file">순간의 이미지를 올려주세요📸</label>}
-        {file && <img src={file} alt="이미지파일 " />}
-        {file && <p onClick={() => setFile("")}>❎</p>}
+        {!showImg && <label htmlFor="file">순간의 이미지를 올려주세요📸</label>}
+        {showImg && <img src={showImg} alt="이미지파일 " />}
+        {showImg && <p onClick={() => setShowImg("")}>❎</p>}
       </Imgbox>
       <TextArea
         rows={5}
