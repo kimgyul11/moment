@@ -5,6 +5,7 @@ export const InputWrap = styled.div`
   flex-direction: column;
   width: 100%;
   height: 80px;
+  position: relative;
 `;
 export const ErrText = styled.p`
   color: #c14454;
@@ -18,7 +19,12 @@ export const CompleteText = styled.p`
   margin-left: 5px;
   margin-top: 5px;
 `;
-
+export const Mark = styled.img`
+  position: absolute;
+  top: 20px;
+  right: 15px;
+  width: 25px;
+`;
 export const Wrap = styled.div`
   width: 100%;
   height: 100vh;
@@ -71,7 +77,16 @@ export const Input = styled.input`
   height: 40px;
   border-radius: 15px;
   padding: 6px;
-  border: 1px solid ${({ $hasErr }) => ($hasErr ? "red" : "#e0e0e0")};
+  border: 1px solid
+    ${({ $hasErr, $complate }) => {
+      if ($hasErr) {
+        return "red";
+      } else if ($complate) {
+        return "green";
+      } else {
+        return "#e0e0e0";
+      }
+    }};
   &:focus {
     border: 1px solid #85d6d3;
     outline: none;

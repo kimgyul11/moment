@@ -9,6 +9,7 @@ import Profile from "./pages/Profile";
 import Loading from "./pages/Loading";
 import { useEffect, useState } from "react";
 import { auth } from "./utils/firebase";
+import { ModalContextProvider } from "./context/ModalContext";
 
 const GlobalStyles = createGlobalStyle`
   ${reset};
@@ -59,10 +60,10 @@ function App() {
   }, []);
 
   return (
-    <>
+    <ModalContextProvider>
       <GlobalStyles />
       {isLoading ? <Loading /> : <RouterProvider router={router} />}
-    </>
+    </ModalContextProvider>
   );
 }
 

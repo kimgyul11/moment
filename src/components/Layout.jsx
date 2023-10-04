@@ -1,6 +1,9 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import Navbar from "./Navbar";
+import { useModalContext } from "../context/ModalContext";
+import Modal from "./Modal";
+import CreateMoment from "./CreateMoment";
 
 const Wrap = styled.div`
   width: 100%;
@@ -13,11 +16,19 @@ const Wrap = styled.div`
 `;
 
 const Layout = () => {
+  const { isShow } = useModalContext();
   return (
-    <Wrap>
-      <Navbar />
-      <Outlet />
-    </Wrap>
+    <>
+      {isShow && (
+        <Modal>
+          <CreateMoment />
+        </Modal>
+      )}
+      <Wrap>
+        <Navbar />
+        <Outlet />
+      </Wrap>
+    </>
   );
 };
 

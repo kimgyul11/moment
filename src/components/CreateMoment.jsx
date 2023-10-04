@@ -13,7 +13,10 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 const Form = styled.form`
   display: flex;
   flex-direction: column;
+  justify-content: end;
   gap: 10px;
+  padding-top: 20px;
+  height: 100%;
 `;
 const TextArea = styled.textarea`
   border: 2px solid white;
@@ -40,7 +43,7 @@ const AttachFileBtn = styled.label`
   color: #5ea8c9;
   text-align: center;
   border-radius: 20px;
-  border: 1px solid #5ea8c9;
+  border: 1px solid #85d6d3;
   cursor: pointer;
 `;
 const AttachFileInput = styled.input`
@@ -52,11 +55,33 @@ const SubmitBtn = styled.input`
   border: none;
   padding: 10px 0px;
   border-radius: 20px;
+  font-weight: bold;
   cursor: pointer;
 `;
-const Imgmiri = styled.div`
-  width: 100px;
-  height: 100px;
+const Imgbox = styled.div`
+  margin: 16px auto;
+  border: 1px dashed #e0e0e0;
+  width: 100%;
+  height: 40%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  position: relative;
+  label {
+    cursor: pointer;
+    color: #c3c2c2;
+  }
+  img {
+    width: 150px;
+    height: 150px;
+  }
+  p {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+  }
 `;
 const CreateMoment = () => {
   const [isLoading, setLoading] = useState(false);
@@ -130,16 +155,21 @@ const CreateMoment = () => {
   };
   return (
     <Form onSubmit={onSubmit}>
+      <Imgbox>
+        {!file && <label htmlFor="file">순간의 이미지를 올려주세요📸</label>}
+        {file && <img src={file} alt="이미지파일 " />}
+        {file && <p onClick={() => setFile("")}>❎</p>}
+      </Imgbox>
       <TextArea
         rows={5}
         maxLength={180}
-        placeholder="글을 작성해보세요"
+        placeholder="순간을 기록해주세요."
         value={text}
         onChange={onChange}
         required
       />
       <AttachFileBtn htmlFor="file">
-        {file ? "이미지 추가완료✅" : "사진 업로드"}
+        {file ? "이미지 재선택✅" : "사진 업로드"}
       </AttachFileBtn>
       <AttachFileInput
         id="file"
@@ -149,10 +179,6 @@ const CreateMoment = () => {
         onChange={saveImgFile}
       />
       <SubmitBtn type="submit" value={isLoading ? "글 올리는중..." : "확인"} />
-      <Imgmiri>
-        {file && <img src={file} alt="이미지파일 " />}
-        {file && <p onClick={() => setFile("")}>X</p>}
-      </Imgmiri>
     </Form>
   );
 };

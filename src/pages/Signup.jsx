@@ -5,16 +5,18 @@ import useInput from "../hooks/useInput";
 import { useState } from "react";
 import {
   Button,
-  CompleteText,
   ErrText,
   Form,
   Input,
   InputWrap,
   Lable,
   Linkbtn,
+  Mark,
   Title,
   Wrap,
 } from "../assets/styled_component/login-signup";
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const passwordRegex = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -25,15 +27,15 @@ const Signup = () => {
     hasErr: emailhaserr,
     onChange: onChangeEmail,
     onBlur: onBlurEmail,
-    reset: resetEmail,
-  } = useInput((value) => value.includes("@"));
+    complete: completeEmail,
+  } = useInput((value) => emailRegex.test(value));
   const {
     enterdValue: enteredNN,
     enteredValueIsValid: enteredNN_valid,
     hasErr: enteredNN_hasErr,
     onChange: onChangeNN,
     onBlur: onBlurNN,
-    reset: resetNN,
+    complete: completeNN,
   } = useInput((value) => value.length >= 2);
   const {
     enterdValue: enteredPW,
@@ -41,17 +43,16 @@ const Signup = () => {
     hasErr: enteredPW_hasErr,
     onChange: onChangePW,
     onBlur: onBlurPW,
-    reset: resetPW,
-  } = useInput((value) => value.trim() !== "" && value.length > 6);
+    complete: completePW,
+  } = useInput((value) => passwordRegex.test(value));
   const {
     enterdValue: enteredPWC,
     enteredValueIsValid: enteredPWC_valid,
     hasErr: enteredPWC_hasErr,
     onChange: onChangePWC,
     onBlur: onBlurPWC,
-    reset: resetPWC,
-    complate: complatePWC,
-  } = useInput((value) => value === enteredPW);
+    complete: completePWC,
+  } = useInput((value) => value === enteredPW && value !== "");
 
   //form 유효성검사 체크
   let formIsValid = false;
@@ -101,6 +102,7 @@ const Signup = () => {
           <Lable>이메일</Lable>
           <Input
             $hasErr={emailhaserr}
+            $complate={completeEmail}
             type="email"
             placeholder="이메일을 입력해 주세요"
             value={enteredEmail}
@@ -108,6 +110,7 @@ const Signup = () => {
             onBlur={onBlurEmail}
             required
           />
+          {completeEmail && <Mark src="/check.png" alt="완료마크" />}
           {emailhaserr && (
             <ErrText>올바른 이메일 형식으로 입력해주세요!</ErrText>
           )}
@@ -116,6 +119,7 @@ const Signup = () => {
           <Lable>닉네임</Lable>
           <Input
             $hasErr={enteredNN_hasErr}
+            $complate={completeNN}
             type="text"
             placeholder="닉네임을 입력해 주세요"
             value={enteredNN}
@@ -123,25 +127,31 @@ const Signup = () => {
             onBlur={onBlurNN}
             required
           />
+          {completeNN && <Mark src="/check.png" alt="완료마크" />}
           {enteredNN_hasErr && <ErrText>최소 2글자 이상 작성해주세요</ErrText>}
         </InputWrap>
         <InputWrap>
           <Lable>비밀번호</Lable>
           <Input
             $hasErr={enteredPW_hasErr}
+            $complate={completePW}
             type="password"
-            placeholder="비밀번호"
+            placeholder="특수문자를 포함한 6글자 이상"
             value={enteredPW}
             onChange={onChangePW}
             onBlur={onBlurPW}
             required
           />
-          {enteredPW_hasErr && <ErrText>최소 6글자 이상 작성해주세요</ErrText>}
+          {completePW && <Mark src="/check.png" alt="완료마크" />}
+          {enteredPW_hasErr && (
+            <ErrText>특수문자를 포함한 6글자 이상이여야합니다.</ErrText>
+          )}
         </InputWrap>
         <InputWrap>
           <Lable>비밀번호 확인</Lable>
           <Input
             $hasErr={enteredPWC_hasErr}
+            $complate={completePWC}
             type="password"
             placeholder="비밀번호"
             value={enteredPWC}
@@ -149,10 +159,10 @@ const Signup = () => {
             onBlur={onBlurPWC}
             required
           />
+          {completePWC && <Mark src="/check.png" alt="완료마크" />}
           {enteredPWC_hasErr && (
             <ErrText>비밀번호가 일치하지 않습니다.</ErrText>
           )}
-          {complatePWC && <CompleteText>비밀번호가 일치합니다✅</CompleteText>}
         </InputWrap>
         <Button disabled={loading}>
           {loading ? "회원 생성중..👷‍♂️" : "회원가입"}

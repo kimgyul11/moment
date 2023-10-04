@@ -2,6 +2,9 @@ import styled from "styled-components";
 import BestMoment from "../components/BestMoment";
 import { auth } from "../utils/firebase";
 import Moment from "../components/Moment";
+
+import { useModalContext } from "../context/ModalContext";
+
 const Wrap = styled.div`
   width: 0%;
   flex: 1;

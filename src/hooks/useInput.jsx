@@ -6,7 +6,7 @@ const useInput = (validation) => {
 
   const enteredValueIsValid = validation(enterdValue);
   const hasErr = !enteredValueIsValid && inputTouched;
-  const complate = !hasErr && inputTouched;
+  const complete = !hasErr && inputTouched;
 
   const onChange = (e) => {
     setEnterdValue(e.target.value);
@@ -25,7 +25,7 @@ const useInput = (validation) => {
     hasErr,
     onChange,
     onBlur,
-    complate,
+    complete,
     reset,
   };
 };
