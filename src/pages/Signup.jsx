@@ -3,6 +3,7 @@ import { auth } from "../utils/firebase";
 import { Link, useNavigate } from "react-router-dom";
 import useInput from "../hooks/useInput";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import {
   Button,
   ErrText,
@@ -80,8 +81,9 @@ const Signup = () => {
       console.log(credentials);
       await updateProfile(credentials.user, { displayName: enteredNN });
       navigate("/login");
+      toast.success("🎉 성공적으로 가입되었습니다. ");
     } catch (e) {
-      console.log(e);
+      toast.error(e.code);
     } finally {
       setLoading(false);
     }
@@ -164,7 +166,7 @@ const Signup = () => {
             <ErrText>비밀번호가 일치하지 않습니다.</ErrText>
           )}
         </InputWrap>
-        <Button disabled={loading}>
+        <Button disabled={loading || !formIsValid}>
           {loading ? "회원 생성중..👷‍♂️" : "회원가입"}
         </Button>
       </Form>

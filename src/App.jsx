@@ -11,6 +11,9 @@ import { useEffect, useState } from "react";
 import { auth } from "./utils/firebase";
 import { ModalContextProvider } from "./context/ModalContext";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const GlobalStyles = createGlobalStyle`
   ${reset};
   *{
@@ -62,6 +65,7 @@ function App() {
   return (
     <ModalContextProvider>
       <GlobalStyles />
+      <ToastContainer />
       {isLoading ? <Loading /> : <RouterProvider router={router} />}
     </ModalContextProvider>
   );
