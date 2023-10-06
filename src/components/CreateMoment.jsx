@@ -9,8 +9,9 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { useModalContext } from "../context/ModalContext";
+import { toast } from "react-toastify";
 
 const Form = styled.form`
   display: flex;
@@ -86,32 +87,33 @@ const Imgbox = styled.div`
   }
 `;
 const CreateMoment = () => {
-  const [isLoading, setLoading] = useState(false);
   const [text, setText] = useState("");
-  const [file, setFile] = useState(null);
-  const [showImg, setShowImg] = useState("");
-  const imgRef = useRef();
-  const user = auth.currentUser;
+  const [imageFile, setImageFile] = useState(null);
+  const [isLoading, setLoading] = useState(false);
 
+  const user = auth.currentUser;
+  const { setIsShow } = useModalContext();
   const onChange = (e) => {
     setText(e.target.value);
   };
 
-  // const onFileChange = (e) => {
-  //   const { files } = e.target;
-  //   if (files && files.length === 1) {
-  //     setFile(files[0]);
-  //   }
-  // };
+  //이미지 업로드 핸들러
+  const handleFileUpload = (e) => {
+    const {
+      target: { files },
+    } = e;
+    const imgMaxSize = 1024 * 1024;
+    const file = files?.[0];
+    if (file.size > imgMaxSize) {
+      alert("1MB이상의 사진은 업로드 불가능합니다.");
+      return;
+    }
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+    fileReader.onloadend = (e) => {
+      const { result } = e?.currentTarget;
 
-  //이미지 미리보기를 위해서 FileReader사용
-  const saveImgFile = () => {
-    const selectedFile = imgRef.current.files[0];
-    setFile(selectedFile);
-    const reader = new FileReader();
-    reader.readAsDataURL(selectedFile);
-    reader.onloadend = () => {
-      setShowImg(reader.result);
+      setImageFile(result);
     };
   };
 
@@ -121,8 +123,7 @@ const CreateMoment = () => {
 
     try {
       setLoading(true);
-
-      const imgMaxSize = 1024 * 1024;
+      //moment업로드
       const docs = await addDoc(collection(db, "moment"), {
         text,
         createdAt: Date.now(),
@@ -130,33 +131,27 @@ const CreateMoment = () => {
         userId: user.uid,
         userPhoto: user.photoURL,
       });
-      //이미지 크기가 초과할경우 -> docs를 삭제하고 알림을 보낸다.
-      if (file && file.size > imgMaxSize) {
-        alert("파일 크기가 1MB를 초과합니다.");
-        await deleteDoc(doc(db, "moment", docs.id));
-        setText("");
-        setFile(null);
-        setShowImg(null);
-        return;
-      }
-      //이미지가 알맞는 경우 업데이트를 한다.
 
-      if (file && file.size < imgMaxSize) {
-        const locationRef = ref(
+      //이미지 파일이 있다면 storage에 이미지를 업로드하고, collection을 업데이트한다.
+      if (imageFile) {
+        const storageRef = ref(
           storage,
           `moment/${user.uid}/${docs.id}-${user.displayName}`
         );
-        const result = await uploadBytes(locationRef, file);
-        const url = await getDownloadURL(result.ref);
+        const data = await uploadString(storageRef, imageFile, "data_url");
+        const imageUrl = await getDownloadURL(data.ref);
         await updateDoc(docs, {
-          photo: url,
+          photo: imageUrl,
         });
       }
+
+      //모든 입력창 초기화한다.
+      setImageFile(null);
       setText("");
-      setFile(null);
-      setShowImg(null);
+      setIsShow(false);
+      toast.success("모멘트 등록 완료📸");
     } catch (e) {
-      console.log(e);
+      toast.error("문제가 발생했습니다.");
     } finally {
       setLoading(false);
     }
@@ -164,9 +159,11 @@ const CreateMoment = () => {
   return (
     <Form onSubmit={onSubmit}>
       <Imgbox>
-        {!showImg && <label htmlFor="file">순간의 이미지를 올려주세요📸</label>}
-        {showImg && <img src={showImg} alt="이미지파일 " />}
-        {showImg && <p onClick={() => setShowImg("")}>❎</p>}
+        {!imageFile && (
+          <label htmlFor="file">순간의 이미지를 올려주세요📸</label>
+        )}
+        {imageFile && <img src={imageFile} alt="이미지파일 " />}
+        {imageFile && <p onClick={() => setImageFile("")}>❎</p>}
       </Imgbox>
       <TextArea
         rows={5}
@@ -177,14 +174,13 @@ const CreateMoment = () => {
         required
       />
       <AttachFileBtn htmlFor="file">
-        {file ? "이미지 재선택✅" : "사진 업로드"}
+        {imageFile ? "이미지 재선택✅" : "사진 업로드"}
       </AttachFileBtn>
       <AttachFileInput
         id="file"
-        accept="image/*"
         type="file"
-        ref={imgRef}
-        onChange={saveImgFile}
+        accept="image/*"
+        onChange={handleFileUpload}
       />
       <SubmitBtn type="submit" value={isLoading ? "글 올리는중..." : "확인"} />
     </Form>
