@@ -103,16 +103,7 @@ const HashTagWrap = styled.div`
     align-items: center;
     flex-wrap: wrap;
   }
-  p {
-    margin: 2px;
-    background-color: #85d6d3;
-    color: #fff;
-    font-weight: 700;
-    padding: 6px;
-    border-radius: 999px;
-    font-size: 0.7rem;
-    cursor: pointer;
-  }
+
   input {
     margin-top: 5px;
     width: 100%;
@@ -122,6 +113,16 @@ const HashTagWrap = styled.div`
     margin-bottom: 16px;
     outline: none;
   }
+`;
+const HasTag = styled.p`
+  margin: 2px;
+  background-color: #85d6d3;
+  color: #fff;
+  font-weight: 700;
+  padding: 6px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  cursor: pointer;
 `;
 const SubmitBtn = styled.input`
   background-color: #85d6d3;
@@ -253,13 +254,13 @@ const CreateMoment = () => {
         <div>
           {tags.length > 0 ? (
             tags.map((tag, idx) => (
-              <p
+              <HasTag
                 key={idx}
                 onClick={() => hashTagDelteHandler(tag)}
-              >{`#${tag}`}</p>
+              >{`#${tag}`}</HasTag>
             ))
           ) : (
-            <p>#태그를 추가해보세요!</p>
+            <HasTag>#태그를 추가해보세요!</HasTag>
           )}
         </div>
         <input

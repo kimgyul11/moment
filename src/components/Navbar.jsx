@@ -99,7 +99,7 @@ const Navbar = () => {
         <Item onClick={showModal}>
           <BsPencil />
         </Item>
-        <Link to="/">
+        <Link to="/search">
           <Item>
             <LiaSearchSolid />
           </Item>
