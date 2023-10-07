@@ -2,11 +2,15 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { auth } from "../utils/firebase";
 import { useModalContext } from "../context/ModalContext";
-
+import { BsPencil } from "react-icons/bs";
+import { AiOutlineHome } from "react-icons/ai";
+import { BiUserCircle, BiLogOut } from "react-icons/bi";
+import { LiaSearchSolid } from "react-icons/lia";
+import { toast } from "react-toastify";
 const Nav = styled.div`
-  min-width: 80px;
-  max-width: 80px;
-  background-color: #e0e0e0;
+  min-width: 60px;
+  max-width: 60px;
+  background-color: #e0dddda4;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -15,6 +19,7 @@ const Nav = styled.div`
     width: 100%;
     max-width: 100%;
     height: 90px;
+
     flex-direction: row;
   }
 `;
@@ -23,20 +28,44 @@ const Menu = styled.div`
   flex-direction: column;
   @media (max-width: 700px) {
     flex-direction: row;
+    align-items: center;
+    height: 60px;
   }
 `;
 const Item = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 50px;
-  height: 50px;
-  margin: 15px;
+  background-color: white;
+  width: 42px;
+  height: 42px;
+  margin: 12px 0px;
   border-radius: 50%;
   overflow: hidden;
+  font-size: 1.5rem;
+
   cursor: pointer;
+
+  &:hover {
+    background-color: #d6d1d1;
+    animation: rotateAnimation 0.4s;
+    /* transform: rotate(-25deg); */
+  }
   @media (max-width: 700px) {
-    width: 35px;
+    width: 42px;
+    height: 42px;
+    margin: 2px 6px;
+  }
+  @keyframes rotateAnimation {
+    0% {
+      transform: rotate(-12deg);
+    }
+    50% {
+      transform: rotate(-25deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
   }
 `;
 
@@ -50,6 +79,7 @@ const Navbar = () => {
     const ok = confirm("정말 로그아웃 하실건가요?");
     if (ok) {
       await auth.signOut();
+      toast.success("로그아웃 되었습니다.");
       navigate("/login");
     }
   };
@@ -62,24 +92,26 @@ const Navbar = () => {
       <Menu>
         <Link to="/">
           <Item>
-            <Img src="home-button.png" />
+            <AiOutlineHome />
+          </Item>
+        </Link>
+
+        <Item onClick={showModal}>
+          <BsPencil />
+        </Item>
+        <Link to="/">
+          <Item>
+            <LiaSearchSolid />
           </Item>
         </Link>
         <Link to="/profile">
           <Item>
-            {user.photoURL ? (
-              <Img src={user.photoURL} />
-            ) : (
-              <Img src="/profile2.png" />
-            )}
+            {user.photoURL ? <Img src={user.photoURL} /> : <BiUserCircle />}
           </Item>
         </Link>
-        <Item onClick={showModal}>
-          <Img src="/pencil.png" />
-        </Item>
       </Menu>
       <Item onClick={onLogOut}>
-        <Img src="/logout.png" />
+        <BiLogOut />
       </Item>
     </Nav>
   );

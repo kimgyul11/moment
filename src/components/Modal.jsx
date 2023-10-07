@@ -1,14 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import { useModalContext } from "../context/ModalContext";
-
+import { GrClose } from "react-icons/gr";
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.792);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -22,10 +22,14 @@ const ModalContainer = styled.div`
   border-radius: 15px;
   border: none;
   box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
-  width: 60vh;
-  max-width: 400px;
-  max-height: 500px;
-  height: 70vh;
+  width: 70vh;
+  max-width: 500px;
+  max-height: 600px;
+  height: 90vh;
+  @media (max-width: 700px) {
+    width: 100vh;
+    max-height: 800px;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -46,7 +50,9 @@ const Modal = ({ children }) => {
   return (
     <ModalOverlay>
       <ModalContainer>
-        <CloseButton onClick={onClose}>❌</CloseButton>
+        <CloseButton onClick={onClose}>
+          <GrClose />
+        </CloseButton>
         {children}
       </ModalContainer>
     </ModalOverlay>

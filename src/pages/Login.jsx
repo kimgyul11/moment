@@ -17,6 +17,7 @@ import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { FirebaseError } from "firebase/app";
+import { toast } from "react-toastify";
 
 const SocialBtnWrap = styled.div`
   width: 100%;
@@ -52,9 +53,11 @@ const Login = () => {
         loginInfo.password
       );
       navigate("/");
+      toast.success("로그인 완료!");
     } catch (e) {
+      toast.error("문제가 발생했습니다.");
       if (e instanceof FirebaseError) {
-        setError(e.message);
+        setError(e);
       }
     } finally {
       setIsLoading(false);
