@@ -46,7 +46,9 @@ const Moment = () => {
     <MomentWrap>
       {isLoading
         ? "로딩중"
-        : moments.map((moment) => <MomentBox key={moment.id} {...moment} />)}
+        : moments.map((moment) => (
+            <MomentBox key={moment.id} moment={moment} />
+          ))}
     </MomentWrap>
   );
 };

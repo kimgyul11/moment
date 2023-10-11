@@ -67,7 +67,7 @@ const Search = () => {
       </SearchBox>
       <ContentWrap>
         {moments.length > 0 ? (
-          moments.map((moment) => <MomentBox key={moment.id} {...moment} />)
+          moments.map((moment) => <MomentBox key={moment.id} moment={moment} />)
         ) : (
           <p>검색결과 없슴</p>
         )}

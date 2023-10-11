@@ -2,8 +2,20 @@ import React from "react";
 import styled from "styled-components";
 import dayjs from "dayjs";
 
-import { auth } from "../utils/firebase";
+import { BiSolidLike, BiLike, BiCommentDetail } from "react-icons/bi";
+
+import { auth, db, storage } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
+import {
+  arrayRemove,
+  arrayUnion,
+  collection,
+  deleteDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
+import { toast } from "react-toastify";
+import { deleteObject, ref } from "firebase/storage";
 const Box = styled.div`
   display: flex;
   flex-direction: column;
@@ -40,6 +52,7 @@ const Body = styled.div`
   display: flex;
   padding: 6px 12px;
   flex: 1;
+  cursor: pointer;
 `;
 
 const Content = styled.div`
@@ -91,47 +104,106 @@ const ButtonWrap = styled.div`
   width: 50%;
   height: 30px;
   button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-right: 2px;
     width: 50px;
     border: none;
     padding: 6px;
     border-radius: 999px;
-    background: #e0e0e0;
+    border: 1px solid #e0e0e0;
+    font-weight: 700;
     cursor: pointer;
     &:hover {
       background-color: #e0e0e0;
     }
+    &:nth-child(1) {
+      border: 1px solid #cf1919dc;
+      color: #cf1919dc;
+      background: #fff;
+      &:hover {
+        background-color: #cf1919dc;
+        color: #fff;
+      }
+    }
+    &:nth-child(2) {
+      border: 1px solid #262d73;
+      background-color: #fff;
+      color: #262d73;
+      &:hover {
+        background-color: #1d225b;
+        color: #fff;
+      }
+    }
   }
 `;
-const MomentBox = ({
-  text,
-  createdAt,
-  userId,
-  id,
-  userPhoto,
-  username,
-  photo,
-  hashTag,
-}) => {
+
+const SmallButton = styled.button``;
+const MomentBox = ({ moment }) => {
   const user = auth.currentUser;
   const navigate = useNavigate();
+
+  //삭제 핸들러
+  const onClickDelete = async () => {
+    const imageRef = ref(
+      storage,
+      `moment/${moment.userId}/${moment.id}-${moment.username}`
+    );
+    let ok = window.confirm("정말 게시글을 삭제하실건가요?");
+    if (ok) {
+      //이미지가 있을경우 이미지를 삭제
+      if (moment.photo) {
+        deleteObject(imageRef).catch((error) => {
+          console.log(error);
+        });
+      }
+      await deleteDoc(doc(db, "moment", moment.id));
+      toast.success("게시글을 삭제했습니다.");
+      navigate("/");
+    }
+  };
+  //좋아요 버튼 핸들러
+  const onClickLike = async () => {
+    const momentRef = doc(db, "moment", moment.id);
+    //1.like필드에 현재 로그인한 유저가 존재한다면 삭제.
+    if (user.uid && moment.likes && moment.likes.includes(user.uid)) {
+      await updateDoc(momentRef, {
+        likes: arrayRemove(user.uid),
+        likeCount: moment.likeCount ? moment.likeCount - 1 : 0,
+      });
+    } else {
+      //2.like필드에 로그인한 유저가 없다면 추가
+      await updateDoc(momentRef, {
+        likes: arrayUnion(user.uid),
+        likeCount: moment.likeCount ? moment.likeCount + 1 : 1,
+      });
+    }
+  };
+
   return (
     <Box>
       <Header>
-        <img src={userPhoto} alt="프로필화면" />
-        <p>{username}</p>
+        <img src={moment.userPhoto} alt="profile" />
+        <p>{moment.username}</p>
         <CreatedAt>
-          {dayjs(createdAt).format("YYYY년 MM월 DD일 HH:mm")}
+          {dayjs(moment.createdAt).format("YYYY년 MM월 DD일 HH:mm")}
         </CreatedAt>
       </Header>
-      <Body>
-        {photo && <Img src={photo} />}
-        <Content>{text}</Content>
+
+      <Body
+        onClick={() => {
+          navigate(`/moment/${moment.id}`);
+        }}
+      >
+        {moment.photo && <Img src={moment.photo} />}
+        <Content>{moment.text}</Content>
       </Body>
+
       <Footer>
         <HashTagWrap>
-          {hashTag.length > 0 &&
-            hashTag.map((tag, idx) => (
+          {moment.hashTag.length > 0 &&
+            moment.hashTag.map((tag, idx) => (
               <HasTag
                 key={idx}
                 onClick={() => {
@@ -141,14 +213,25 @@ const MomentBox = ({
             ))}
         </HashTagWrap>
         <ButtonWrap>
-          {user.uid === userId && (
+          {user.uid === moment.userId && (
             <>
-              <button>삭제</button>
+              <button onClick={onClickDelete}>삭제</button>
               <button>수정</button>
             </>
           )}
-          <button>좋아요</button>
-          <button>저장</button>
+          <button onClick={onClickLike}>
+            {moment.likes && moment.likes.includes(user.uid) ? (
+              <BiSolidLike />
+            ) : (
+              <BiLike />
+            )}
+            {moment.likeCount || 0}
+          </button>
+
+          <button>
+            <BiCommentDetail />
+            {(moment.comments && moment.comments.length) || 0}
+          </button>
         </ButtonWrap>
       </Footer>
     </Box>

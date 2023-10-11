@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { auth } from "../utils/firebase";
 import { useModalContext } from "../context/ModalContext";
 import { BsPencil } from "react-icons/bs";
-import { AiOutlineHome } from "react-icons/ai";
+import { AiOutlineHome } from "react-icons/Ai";
 import { BiUserCircle, BiLogOut } from "react-icons/bi";
 import { LiaSearchSolid } from "react-icons/lia";
 import { toast } from "react-toastify";

@@ -14,7 +14,7 @@ import { ModalContextProvider } from "./context/ModalContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Search from "./pages/search";
-import SearchDetail from "./pages/search/searchDetail";
+import MomentDetail from "./pages/moment/momentDetail";
 
 const GlobalStyles = createGlobalStyle`
   ${reset};
@@ -48,6 +48,7 @@ const router = createBrowserRouter([
         element: <Search />,
       },
       { path: "/search/:id", element: <Search /> },
+      { path: "/moment/:id", element: <MomentDetail /> },
     ],
   },
   { path: "/sign-up", element: <Signup /> },
