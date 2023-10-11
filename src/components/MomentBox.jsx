@@ -216,7 +216,9 @@ const MomentBox = ({ moment }) => {
           {user.uid === moment.userId && (
             <>
               <button onClick={onClickDelete}>삭제</button>
-              <button>수정</button>
+              <button onClick={() => navigate(`/moment/edit/${moment.id}`)}>
+                수정
+              </button>
             </>
           )}
           <button onClick={onClickLike}>
@@ -228,9 +230,9 @@ const MomentBox = ({ moment }) => {
             {moment.likeCount || 0}
           </button>
 
-          <button>
+          <button onClick={() => navigate(`/moment/${moment.id}`)}>
             <BiCommentDetail />
-            {(moment.comments && moment.comments.length) || 0}
+            {(moment.comment && moment.comment.length) || 0}
           </button>
         </ButtonWrap>
       </Footer>

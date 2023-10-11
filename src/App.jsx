@@ -5,7 +5,7 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
-import Profile from "./pages/Profile";
+
 import Loading from "./pages/Loading";
 import { useEffect, useState } from "react";
 import { auth } from "./utils/firebase";
@@ -15,6 +15,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Search from "./pages/search";
 import MomentDetail from "./pages/moment/momentDetail";
+import MomentEdit from "./pages/moment/momentEdit";
+import Profile from "./pages/profile/Profile";
 
 const GlobalStyles = createGlobalStyle`
   ${reset};
@@ -48,6 +50,7 @@ const router = createBrowserRouter([
         element: <Search />,
       },
       { path: "/search/:id", element: <Search /> },
+      { path: "/moment/edit/:id", element: <MomentEdit /> },
       { path: "/moment/:id", element: <MomentDetail /> },
     ],
   },
