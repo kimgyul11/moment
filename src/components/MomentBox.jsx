@@ -149,7 +149,6 @@ const ButtonWrap = styled.div`
   }
 `;
 
-const SmallButton = styled.button``;
 const MomentBox = ({ moment }) => {
   const user = auth.currentUser;
   const navigate = useNavigate();
@@ -191,13 +190,13 @@ const MomentBox = ({ moment }) => {
     }
   };
   const IMG_SRC = "profile.png";
-
+  console.log(moment.userPhoto);
   return (
     <Box>
       <Header>
         <Profile>
           <img
-            src={moment.userPhoto ? moment.userPhoto : IMG_SRC}
+            src={moment.userPhoto ? moment.userPhoto : "profile.png"}
             alt="profile"
           />
           <p>{moment.username}</p>

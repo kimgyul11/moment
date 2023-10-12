@@ -103,7 +103,7 @@ const Navbar = () => {
             <LiaSearchSolid />
           </Item>
         </Link>
-        <Link to="/">
+        <Link to="/notification">
           <Item>
             <IoIosNotificationsOutline />
           </Item>

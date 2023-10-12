@@ -64,7 +64,7 @@ export default function FollowingButton({ moment }) {
         //팔로잉 알림 생성
         if (user.uid !== moment.userId) {
           await addDoc(collection(db, "notifications"), {
-            createdAt: new Date(),
+            createdAt: Date.now(),
             content: `${
               user.displayName || user.email
             }님이 당신을 팔로우 했습니다.`,

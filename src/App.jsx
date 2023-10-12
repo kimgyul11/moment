@@ -17,6 +17,7 @@ import Search from "./pages/search";
 import MomentDetail from "./pages/moment/momentDetail";
 import MomentEdit from "./pages/moment/momentEdit";
 import Profile from "./pages/profile/Profile";
+import NotificationPage from "./pages/notification";
 
 const GlobalStyles = createGlobalStyle`
   ${reset};
@@ -52,6 +53,7 @@ const router = createBrowserRouter([
       { path: "/search/:id", element: <Search /> },
       { path: "/moment/edit/:id", element: <MomentEdit /> },
       { path: "/moment/:id", element: <MomentDetail /> },
+      { path: "/notification", element: <NotificationPage /> },
     ],
   },
   { path: "/sign-up", element: <Signup /> },
