@@ -7,6 +7,7 @@ import { BiSolidLike, BiLike, BiCommentDetail } from "react-icons/bi";
 import { auth, db, storage } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import {
+  addDoc,
   arrayRemove,
   arrayUnion,
   collection,
@@ -113,40 +114,48 @@ const ButtonWrap = styled.div`
   align-items: center;
   width: 50%;
   height: 30px;
+
   button {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 2px;
-    width: 50px;
     border: none;
-    padding: 6px;
+    font-size: 0.8rem;
+    width: 50px;
+    height: 25px;
+    background-color: #bfbfbf;
+
     border-radius: 999px;
-    border: 1px solid #e0e0e0;
-    font-weight: 700;
+    margin: 0px 4px;
     cursor: pointer;
-    &:hover {
-      background-color: #e0e0e0;
-    }
+  }
+`;
+const EditBtnWrap = styled.div`
+  display: flex;
+  @media (max-width: 800px) {
+  }
+  button {
     &:nth-child(1) {
-      border: 1px solid #cf1919dc;
-      color: #cf1919dc;
-      background: #fff;
+      color: #fff;
+      background: #cf1919dc;
       &:hover {
-        background-color: #cf1919dc;
+        background-color: #971717dc;
         color: #fff;
       }
     }
     &:nth-child(2) {
-      border: 1px solid #262d73;
-      background-color: #fff;
-      color: #262d73;
+      background-color: #262c6f;
+      color: #fff;
       &:hover {
-        background-color: #1d225b;
+        background-color: #05081e;
         color: #fff;
       }
     }
   }
+`;
+
+const ServiceBtnWrap = styled.div`
+  display: flex;
 `;
 
 const MomentBox = ({ moment }) => {
@@ -181,6 +190,17 @@ const MomentBox = ({ moment }) => {
         likes: arrayRemove(user.uid),
         likeCount: moment.likeCount ? moment.likeCount - 1 : 0,
       });
+      if (user.uid !== moment.userId) {
+        await addDoc(collection(db, "notifications"), {
+          createdAt: Date.now(),
+          content: `${
+            user.displayName || user.email
+          }님이 게시글에 좋아요를 눌렀습니다.`,
+          url: `/moment/${moment.id}`,
+          isRead: false,
+          userId: moment.userId,
+        });
+      }
     } else {
       //2.like필드에 로그인한 유저가 없다면 추가
       await updateDoc(momentRef, {
@@ -189,16 +209,13 @@ const MomentBox = ({ moment }) => {
       });
     }
   };
-  const IMG_SRC = "profile.png";
-  console.log(moment.userPhoto);
+  const url =
+    "https://e7.pngegg.com/pngimages/906/222/png-clipart-computer-icons-user-profile-avatar-french-people-computer-network-heroes-thumbnail.png";
   return (
     <Box>
       <Header>
         <Profile>
-          <img
-            src={moment.userPhoto ? moment.userPhoto : "profile.png"}
-            alt="profile"
-          />
+          <img src={moment.userPhoto ? moment.userPhoto : url} alt="profile" />
           <p>{moment.username}</p>
           {user.uid !== moment.userId && <FollowingButton moment={moment} />}
         </Profile>
@@ -230,26 +247,28 @@ const MomentBox = ({ moment }) => {
         </HashTagWrap>
         <ButtonWrap>
           {user.uid === moment.userId && (
-            <>
+            <EditBtnWrap>
               <button onClick={onClickDelete}>삭제</button>
               <button onClick={() => navigate(`/moment/edit/${moment.id}`)}>
                 수정
               </button>
-            </>
+            </EditBtnWrap>
           )}
-          <button onClick={onClickLike}>
-            {moment.likes && moment.likes.includes(user.uid) ? (
-              <BiSolidLike />
-            ) : (
-              <BiLike />
-            )}
-            {moment.likeCount || 0}
-          </button>
+          <ServiceBtnWrap>
+            <button onClick={onClickLike}>
+              {moment.likes && moment.likes.includes(user.uid) ? (
+                <BiSolidLike />
+              ) : (
+                <BiLike />
+              )}
+              {moment.likeCount || 0}
+            </button>
 
-          <button onClick={() => navigate(`/moment/${moment.id}`)}>
-            <BiCommentDetail />
-            {(moment.comment && moment.comment.length) || 0}
-          </button>
+            <button onClick={() => navigate(`/moment/${moment.id}`)}>
+              <BiCommentDetail />
+              {(moment.comment && moment.comment.length) || 0}
+            </button>
+          </ServiceBtnWrap>
         </ButtonWrap>
       </Footer>
     </Box>

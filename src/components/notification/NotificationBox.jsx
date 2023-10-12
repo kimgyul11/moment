@@ -16,8 +16,12 @@ const Box = styled.div`
   margin-bottom: 5px;
   border-radius: 10px;
 `;
-const Date = styled.span``;
-const Content = styled.span``;
+const Date = styled.span`
+  font-size: 0.6rem;
+`;
+const Content = styled.span`
+  font-size: 0.8rem;
+`;
 const ButtonWrap = styled.div`
   button {
     cursor: pointer;
@@ -47,14 +51,26 @@ export default function NotificationBox({ notification }) {
   const navigate = useNavigate();
   //읽음버튼
   const onClickNotiChk = async () => {
-    const ref = doc(db, "notifications", notification.id);
-    await updateDoc(ref, {
-      isRead: true,
-    });
+    if (!notification.isRead) {
+      const ref = doc(db, "notifications", notification.id);
+      await updateDoc(ref, {
+        isRead: true,
+      });
+    }
   };
   //삭제버튼
   const onClickNotiDel = async () => {
     await deleteDoc(doc(db, "notifications", notification.id));
+  };
+  //이동버튼
+  const onClickMove = async () => {
+    if (!notification.isRead) {
+      const ref = doc(db, "notifications", notification.id);
+      await updateDoc(ref, {
+        isRead: true,
+      });
+    }
+    navigate(notification.url);
   };
   return (
     <Box>
@@ -63,7 +79,7 @@ export default function NotificationBox({ notification }) {
       </Date>
       <Content>{notification.content}</Content>
       <ButtonWrap>
-        <button onClick={() => navigate(notification.url)}>이동</button>
+        <button onClick={onClickMove}>이동</button>
         <button onClick={onClickNotiChk}>읽음</button>
         <button onClick={onClickNotiDel}>삭제</button>
       </ButtonWrap>

@@ -120,7 +120,7 @@ export default function FollowingButton({ moment }) {
     <>
       {user.uid !== moment.userId && momentFollowers.includes(user.uid) ? (
         <Button onClick={onClickDeleteFollow}>
-          <Text>팔로우 중..</Text>
+          <Text>팔로잉 중..</Text>
           <BsFillPersonCheckFill />
         </Button>
       ) : (
