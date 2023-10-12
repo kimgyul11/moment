@@ -16,6 +16,7 @@ import {
 } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { deleteObject, ref } from "firebase/storage";
+import FollowingButton from "./following/FollowingButton";
 const Box = styled.div`
   display: flex;
   flex-direction: column;
@@ -37,8 +38,16 @@ const Header = styled.div`
   padding: 5px;
   position: relative;
   text-align: center;
+`;
+
+const Profile = styled.div`
+  display: flex;
+  width: 170px;
+  height: 100%;
+  align-items: center;
   img {
     width: 35px;
+
     border-radius: 50%;
   }
 `;
@@ -50,6 +59,7 @@ const CreatedAt = styled.p`
 `;
 const Body = styled.div`
   display: flex;
+
   padding: 6px 12px;
   flex: 1;
   cursor: pointer;
@@ -180,12 +190,19 @@ const MomentBox = ({ moment }) => {
       });
     }
   };
+  const IMG_SRC = "profile.png";
 
   return (
     <Box>
       <Header>
-        <img src={moment.userPhoto} alt="profile" />
-        <p>{moment.username}</p>
+        <Profile>
+          <img
+            src={moment.userPhoto ? moment.userPhoto : IMG_SRC}
+            alt="profile"
+          />
+          <p>{moment.username}</p>
+          {user.uid !== moment.userId && <FollowingButton moment={moment} />}
+        </Profile>
         <CreatedAt>
           {dayjs(moment.createdAt).format("YYYY년 MM월 DD일 HH:mm")}
         </CreatedAt>

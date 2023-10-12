@@ -43,8 +43,9 @@ const Profile = () => {
             {!isEdit && <span>{displayName}</span>}
             {isEdit && <input value={newDisplayName} onChange={onChange} />}
             <button onClick={() => setIsEdit((prev) => !prev)}>
-              {isEdit ? "취소" : "수정"}
+              {isEdit ? "취소" : "닉네임 수정"}
             </button>
+            {isEdit && <button>저장</button>}
           </Info>
         </LeftInfo>
         {/* 내가 작성한 게시글 보기 */}

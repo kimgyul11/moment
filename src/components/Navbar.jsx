@@ -5,12 +5,13 @@ import { useModalContext } from "../context/ModalContext";
 import { BsPencil } from "react-icons/bs";
 import { AiOutlineHome } from "react-icons/Ai";
 import { BiUserCircle, BiLogOut } from "react-icons/bi";
+import { IoIosNotificationsOutline } from "react-icons/io";
 import { LiaSearchSolid } from "react-icons/lia";
 import { toast } from "react-toastify";
 const Nav = styled.div`
   min-width: 60px;
   max-width: 60px;
-  background-color: #e0dddda4;
+  background-color: #212121fa;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,7 +20,6 @@ const Nav = styled.div`
     width: 100%;
     max-width: 100%;
     height: 90px;
-
     flex-direction: row;
   }
 `;
@@ -95,13 +95,17 @@ const Navbar = () => {
             <AiOutlineHome />
           </Item>
         </Link>
-
         <Item onClick={showModal}>
           <BsPencil />
         </Item>
         <Link to="/search">
           <Item>
             <LiaSearchSolid />
+          </Item>
+        </Link>
+        <Link to="/">
+          <Item>
+            <IoIosNotificationsOutline />
           </Item>
         </Link>
         <Link to="/profile">
