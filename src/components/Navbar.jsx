@@ -8,6 +8,8 @@ import { BiUserCircle, BiLogOut } from "react-icons/bi";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { LiaSearchSolid } from "react-icons/lia";
 import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
+import { useAuthContext } from "../context/AuthContext";
 const Nav = styled.div`
   min-width: 60px;
   max-width: 60px;
@@ -75,6 +77,12 @@ const Img = styled.img`
 const Navbar = () => {
   const navigate = useNavigate();
   const { setIsShow } = useModalContext();
+  const { user } = useAuthContext();
+  const [userPhotoURL, setUserPhotoURL] = useState(user.photoURL);
+  useEffect(() => {
+    setUserPhotoURL(user.photoURL);
+  }, [user.photoURL]);
+
   const onLogOut = async () => {
     const ok = confirm("정말 로그아웃 하실건가요?");
     if (ok) {
@@ -86,7 +94,7 @@ const Navbar = () => {
   const showModal = () => {
     setIsShow(true);
   };
-  const user = auth.currentUser;
+
   return (
     <Nav>
       <Menu>
@@ -110,7 +118,7 @@ const Navbar = () => {
         </Link>
         <Link to="/profile">
           <Item>
-            {user.photoURL ? <Img src={user.photoURL} /> : <BiUserCircle />}
+            {userPhotoURL ? <Img src={userPhotoURL} /> : <BiUserCircle />}
           </Item>
         </Link>
       </Menu>

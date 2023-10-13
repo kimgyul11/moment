@@ -157,6 +157,8 @@ const EditBtnWrap = styled.div`
 const ServiceBtnWrap = styled.div`
   display: flex;
 `;
+export const url =
+  "https://e7.pngegg.com/pngimages/906/222/png-clipart-computer-icons-user-profile-avatar-french-people-computer-network-heroes-thumbnail.png";
 
 const MomentBox = ({ moment }) => {
   const user = auth.currentUser;
@@ -209,8 +211,7 @@ const MomentBox = ({ moment }) => {
       });
     }
   };
-  const url =
-    "https://e7.pngegg.com/pngimages/906/222/png-clipart-computer-icons-user-profile-avatar-french-people-computer-network-heroes-thumbnail.png";
+
   return (
     <Box>
       <Header>

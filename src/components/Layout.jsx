@@ -4,6 +4,8 @@ import Navbar from "./Navbar";
 import { useModalContext } from "../context/ModalContext";
 import Modal from "./Modal";
 import CreateMoment from "./CreateMoment";
+import { auth } from "../utils/firebase";
+import { useEffect, useState } from "react";
 
 const Wrap = styled.div`
   width: 100%;
@@ -17,6 +19,9 @@ const Wrap = styled.div`
 
 const Layout = () => {
   const { isShow } = useModalContext();
+
+  const user = auth.currentUser;
+
   return (
     <>
       {isShow && (
@@ -24,8 +29,9 @@ const Layout = () => {
           <CreateMoment />
         </Modal>
       )}
+
       <Wrap>
-        <Navbar />
+        <Navbar user={user} />
         <Outlet />
       </Wrap>
     </>

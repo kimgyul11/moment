@@ -7,7 +7,7 @@ import { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
 
 import Loading from "./pages/Loading";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { auth } from "./utils/firebase";
 import { ModalContextProvider } from "./context/ModalContext";
 
@@ -63,24 +63,22 @@ const router = createBrowserRouter([
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
-  //유저정보 초기화
+  //유저정보 초기화 함수
   const init = async () => {
     await auth.authStateReady();
-    //파이어베이스에서 계정정보를 받아올때까지 기다린다.
     setIsLoading(false);
   };
 
-  //처음 마운트될때 실행
   useEffect(() => {
     init();
   }, []);
 
   return (
-    <ModalContextProvider>
+    <>
       <GlobalStyles />
       <ToastContainer />
       {isLoading ? <Loading /> : <RouterProvider router={router} />}
-    </ModalContextProvider>
+    </>
   );
 }
 
