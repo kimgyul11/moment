@@ -1,7 +1,8 @@
 import React from "react";
+import MomentEditForm from "../../components/moment/MomentEditForm";
 
 const MomentEdit = () => {
-  return <div></div>;
+  return <MomentEditForm />;
 };
 
 export default MomentEdit;
