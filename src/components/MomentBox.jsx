@@ -131,7 +131,6 @@ const ButtonWrap = styled.div`
     width: 50px;
     height: 25px;
     background-color: #bfbfbf;
-
     border-radius: 999px;
     margin: 0px 4px;
     cursor: pointer;

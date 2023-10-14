@@ -18,22 +18,32 @@ const Box = styled.div`
 `;
 const Date = styled.span`
   font-size: 0.6rem;
+  color: #727272;
 `;
 const Content = styled.span`
   font-size: 0.8rem;
+  font-weight: 700;
 `;
 const ButtonWrap = styled.div`
   button {
     cursor: pointer;
     margin: 3px;
-    border: none;
+    border: 1px solid #e0e0e0;
+    background-color: #fff;
     font-size: 0.6rem;
     border-radius: 999px;
     padding: 6px;
+    &:hover {
+      background-color: #e0e0e0;
+    }
 
     &:nth-child(3) {
-      background-color: #a91919;
-      color: #fff;
+      color: #a91919;
+      border: 1px solid #a91919;
+      &:hover {
+        background-color: #a91919;
+        color: #fff;
+      }
     }
   }
 `;
@@ -41,7 +51,7 @@ const Check = styled.span`
   position: absolute;
   top: 3px;
   right: 5px;
-  background-color: #bb3939;
+  background-color: #3e7cd9e4;
   width: 12px;
   height: 12px;
   border-radius: 999px;

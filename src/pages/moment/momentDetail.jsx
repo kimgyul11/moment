@@ -7,6 +7,7 @@ import MomentBox from "../../components/MomentBox";
 import CommentForm from "../../components/comment/CommentForm";
 import dayjs from "dayjs";
 import CommentBox from "../../components/comment/CommentBox";
+import Loading from "../Loading";
 
 const Wrap = styled.div`
   width: 100%;
@@ -23,6 +24,9 @@ const CommentWrap = styled.div`
   margin-top: 15px;
   width: 50%;
   overflow: auto;
+  @media (max-width: 800px) {
+    width: 100%;
+  }
 `;
 
 const MomentDetail = () => {
@@ -56,21 +60,19 @@ const MomentDetail = () => {
           <CommentForm moment={moment} />
           <CommentWrap>
             {moment.comment &&
-              moment.comment.slice(0).map((data) => (
-                <CommentBox data={data} key={data.commentId} moment={moment} />
-
-                // <div key={data.commentId}>
-                //   <span>{data.comment}</span>
-                //   <span>{data.nickname}</span>
-                //   <span>
-                //     {dayjs(data.createdAt).format("YYYY년 MM월 DD일 HH:mm")}
-                //   </span>
-                // </div>
-              ))}
+              moment.comment
+                .slice(0)
+                .map((data) => (
+                  <CommentBox
+                    data={data}
+                    key={data.commentId}
+                    moment={moment}
+                  />
+                ))}
           </CommentWrap>
         </Wrap>
       ) : (
-        <p>Loading...</p>
+        <Loading />
       )}
     </>
   );
