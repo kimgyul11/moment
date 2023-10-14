@@ -42,14 +42,17 @@ const Header = styled.div`
 `;
 
 const Profile = styled.div`
+  position: relative;
   display: flex;
-  width: 170px;
   height: 100%;
   align-items: center;
   img {
     width: 35px;
-
     border-radius: 50%;
+  }
+  p {
+    font-size: 0.8rem;
+    font-weight: bold;
   }
 `;
 const CreatedAt = styled.p`
@@ -57,6 +60,7 @@ const CreatedAt = styled.p`
   right: 15px;
   top: 30px;
   font-size: 0.7rem;
+  color: #888888;
 `;
 const Body = styled.div`
   display: flex;

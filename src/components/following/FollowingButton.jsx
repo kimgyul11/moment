@@ -16,6 +16,9 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const Button = styled.button`
+  position: absolute;
+  left: 170px;
+  width: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -23,7 +26,7 @@ const Button = styled.button`
   background-color: #2953a7;
   color: #fff;
   border-radius: 999px;
-  padding: 6px;
+  padding: 4px;
   cursor: pointer;
   margin-left: auto;
   svg {

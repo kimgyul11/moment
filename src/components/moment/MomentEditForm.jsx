@@ -2,6 +2,8 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { db, storage } from "../../utils/firebase";
+import { IoIosCloseCircleOutline } from "react-icons/io";
+import { FcAddImage } from "react-icons/fc";
 import styled from "styled-components";
 import dayjs from "dayjs";
 import {
@@ -31,7 +33,7 @@ const Box = styled.div`
   width: 50%;
   max-width: 500px;
   height: 500px;
-  border: 1px solid;
+  border: 1px solid #e0e0e0;
   padding: 6px;
   @media (max-width: 800px) {
     width: 100%;
@@ -58,12 +60,40 @@ const Body = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+
+  input {
+    display: none;
+  }
+`;
+const MomentPhoto = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+
   img {
     width: 130px;
   }
-  input {
+  svg {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+    color: red;
+    font-size: 1.2rem;
+  }
+  label {
+    font: 1rem;
+    color: #bbb4b4;
+    cursor: pointer;
   }
 `;
+
 const TextArea = styled.textarea`
   height: 150px;
   resize: none;
@@ -74,8 +104,7 @@ const Footer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 70px;
-  background: red;
+  height: 100px;
 `;
 const Input = styled.input`
   outline: none;
@@ -93,14 +122,53 @@ const Tag = styled.span`
   background-color: #85d6d3;
   color: #fff;
   font-weight: 700;
-  padding: 6px;
+  padding: 2px;
+
   border-radius: 999px;
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   cursor: pointer;
 `;
-const InputSubmit = styled.input``;
-const TagsWrap = styled.div``;
-const InputWrap = styled.div``;
+
+const TagsWrap = styled.div`
+  width: 100%;
+  height: 50%;
+  flex-wrap: wrap;
+  padding: 4px;
+  overflow-y: auto;
+`;
+const InputWrap = styled.div`
+  height: 50%;
+  padding: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+const ButtonWrap = styled.div`
+  display: flex;
+
+  p,
+  input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    width: 50px;
+    height: 20px;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    background-color: #000;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+  :nth-child(1) {
+    background-color: #b52a2a;
+    color: #fff;
+    margin-right: 5px;
+  }
+`;
+
 export default function MomentEditForm() {
   const [moment, setMoment] = useState(null);
   const [imageFile, setImageFile] = useState(null);
@@ -172,35 +240,43 @@ export default function MomentEditForm() {
     try {
       let imageUrl = "";
       if (moment) {
-        //1.기존 이미지가 변경되었다면 원본 이미지 삭제
         if (moment.photo !== imageFile) {
+          //1.기존 이미지가 변경되었다면 원본 이미지 삭제
           let imageRef = ref(storage, key);
           await deleteObject(imageRef).catch((error) => {
             console.log(error);
           });
-          //2.새로운 이미지를 업로드하고 업데이트
+
           if (imageFile) {
+            //2.새로운 이미지가 있다면 업로드하고 업데이트
             const data = await uploadString(storageRef, imageFile, "data_url");
             imageUrl = await getDownloadURL(data.ref);
-
             const momentRef = doc(db, "moment", moment.id);
             await updateDoc(momentRef, {
               text: content,
               hashTag: tags,
               photo: imageUrl,
             });
-            navigate(`/moment/${moment.id}`);
-            toast.success("게시글 수정 완료!");
-            return;
+          } else {
+            //3.이미지가 삭제된 경우 업데이트
+            const momentRef = doc(db, "moment", moment.id);
+            await updateDoc(momentRef, {
+              text: content,
+              hashTag: tags,
+              photo: "",
+            });
           }
-        }
-        if (!imageFile) {
+          navigate(`/moment/${moment.id}`);
+          toast.success("게시글 수정 완료!");
+        } else {
+          //이미지가 변경되지 않았다면 해시태그,텍스트 중 하나만 변경이 일어났으므로 업데이트
           const momentRef = doc(db, "moment", moment.id);
           await updateDoc(momentRef, {
             text: content,
             hashTag: tags,
-            photo: "",
           });
+          navigate(`/moment/${moment.id}`);
+          toast.success("게시글 수정 완료!");
         }
       }
     } catch (e) {
@@ -215,6 +291,16 @@ export default function MomentEditForm() {
     } = e;
     if (name === "content") {
       setContent(value);
+    }
+  };
+  //이미지 삭제
+  const onImgDelete = () => {
+    setImageFile("");
+  };
+  const onClickBack = () => {
+    const ok = window.confirm("취소하시겠습니까?");
+    if (ok) {
+      navigate(-1);
     }
   };
   return (
@@ -233,14 +319,19 @@ export default function MomentEditForm() {
                 </DateForm>
               </Header>
               <Body>
-                {imageFile && (
-                  <>
-                    <img src={imageFile} />
-                    <p>이미지 삭제</p>
-                  </>
-                )}
+                <MomentPhoto>
+                  {imageFile ? (
+                    <>
+                      <img src={imageFile} />
+                      <IoIosCloseCircleOutline onClick={onImgDelete} />
+                    </>
+                  ) : (
+                    <>
+                      <label htmlFor="file-input">이미지를 추가해보세요</label>
+                    </>
+                  )}
+                </MomentPhoto>
 
-                <label htmlFor="file-input">이미지</label>
                 <input
                   id="file-input"
                   type="file"
@@ -254,7 +345,7 @@ export default function MomentEditForm() {
                 <TagsWrap>
                   {tags?.map((tag, idx) => (
                     <Tag key={idx} onClick={() => removeTag(tag)}>
-                      #{tag}
+                      # {tag}
                     </Tag>
                   ))}
                 </TagsWrap>
@@ -265,11 +356,10 @@ export default function MomentEditForm() {
                     onChange={onChangeHashTag}
                     value={newHashTag}
                   />
-                  <InputSubmit
-                    type="submit"
-                    value="수정"
-                    disabled={isSubmitting}
-                  />
+                  <ButtonWrap>
+                    <p onClick={onClickBack}>취소</p>
+                    <input type="submit" value="수정" disabled={isSubmitting} />
+                  </ButtonWrap>
                 </InputWrap>
               </Footer>
             </Box>

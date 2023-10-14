@@ -77,7 +77,7 @@ function App() {
   return (
     <>
       <GlobalStyles />
-      <ToastContainer />
+      <ToastContainer autoClose={1000} newestOnTop hideProgressBar />
       {isLoading ? <Loading /> : <RouterProvider router={router} />}
     </>
   );
