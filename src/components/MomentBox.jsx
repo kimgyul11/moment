@@ -48,9 +48,12 @@ const Profile = styled.div`
   align-items: center;
   img {
     width: 35px;
+    height: 35px;
     border-radius: 50%;
+    border: 1px solid #e0e0e0;
   }
   p {
+    margin-left: 5px;
     font-size: 0.8rem;
     font-weight: bold;
   }

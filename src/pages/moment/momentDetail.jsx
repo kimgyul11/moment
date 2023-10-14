@@ -6,12 +6,23 @@ import styled from "styled-components";
 import MomentBox from "../../components/MomentBox";
 import CommentForm from "../../components/comment/CommentForm";
 import dayjs from "dayjs";
+import CommentBox from "../../components/comment/CommentBox";
 
 const Wrap = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 12px;
+`;
+
+const CommentWrap = styled.div`
+  border: 1px solid #e0e0e0;
+  padding: 12px;
+  border-radius: 5px;
+  margin-top: 15px;
+  width: 50%;
+  overflow: auto;
 `;
 
 const MomentDetail = () => {
@@ -28,7 +39,6 @@ const MomentDetail = () => {
       });
     }
   }, [params.id]);
-  console.log(moment);
 
   useEffect(() => {
     setIsLoading(true);
@@ -44,16 +54,20 @@ const MomentDetail = () => {
         <Wrap>
           <MomentBox moment={moment} />
           <CommentForm moment={moment} />
-          {moment.comment &&
-            moment.comment.slice(0).map((data) => (
-              <div key={data.commentId}>
-                <span>{data.comment}</span>
-                <span>{data.nickname}</span>
-                <span>
-                  {dayjs(data.createdAt).format("YYYY년 MM월 DD일 HH:mm")}
-                </span>
-              </div>
-            ))}
+          <CommentWrap>
+            {moment.comment &&
+              moment.comment.slice(0).map((data) => (
+                <CommentBox data={data} key={data.commentId} moment={moment} />
+
+                // <div key={data.commentId}>
+                //   <span>{data.comment}</span>
+                //   <span>{data.nickname}</span>
+                //   <span>
+                //     {dayjs(data.createdAt).format("YYYY년 MM월 DD일 HH:mm")}
+                //   </span>
+                // </div>
+              ))}
+          </CommentWrap>
         </Wrap>
       ) : (
         <p>Loading...</p>

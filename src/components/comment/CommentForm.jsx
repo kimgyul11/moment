@@ -9,11 +9,54 @@ import {
 } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "react-toastify";
+import styled from "styled-components";
+
+const Wrap = styled.div`
+  border-radius: 5px;
+  width: 50%;
+  height: 130px;
+  border: 1px solid #e0e0e0;
+  bottom: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  form {
+    width: 100%;
+    height: 130px;
+    padding: 15px;
+    position: relative;
+  }
+  input {
+    width: 100px;
+    height: 25px;
+    background-color: transparent;
+    border: 1px solid #e0e0e0;
+    border-radius: 15px;
+    position: absolute;
+    bottom: 5px;
+    right: 15px;
+    cursor: pointer;
+    color: #000;
+    font-weight: bold;
+  }
+  @media (max-width: 800px) {
+    width: 100%;
+  }
+`;
+
+const TextInput = styled.textarea`
+  width: 100%;
+  height: 80px;
+  border: none;
+  outline: none;
+  resize: none;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+`;
 export default function CommentForm({ moment }) {
   const [comment, setComment] = useState("");
   const user = auth.currentUser;
-  console.log(user);
-  console.log(moment);
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     if (moment && user) {
@@ -53,11 +96,16 @@ export default function CommentForm({ moment }) {
     setComment(value);
   };
   return (
-    <div>
+    <Wrap>
       <form onSubmit={onSubmitHandler}>
-        <input type="text" value={comment} onChange={onChange} />
-        <input type="submit" value="전송" />
+        <TextInput
+          type="text"
+          value={comment}
+          onChange={onChange}
+          placeholder="댓글을 작성해보세요!"
+        />
+        <input type="submit" value="댓글 쓰기" />
       </form>
-    </div>
+    </Wrap>
   );
 }
