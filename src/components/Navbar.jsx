@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { auth } from "../utils/firebase";
 import { useModalContext } from "../context/ModalContext";
 import { BsPencil } from "react-icons/bs";
-import { BiUserCircle, BiLogOut } from "react-icons/bi";
+import { BiUserCircle, BiLogOut, BiSolidHome } from "react-icons/bi";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { LiaSearchSolid } from "react-icons/lia";
 import { toast } from "react-toastify";
@@ -12,25 +12,27 @@ import { useAuthContext } from "../context/AuthContext";
 const Nav = styled.div`
   min-width: 60px;
   max-width: 60px;
-  background-color: #212121fa;
+  border-right: 1px solid #e0e0e0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
   @media (max-width: 700px) {
     width: 100%;
+    height: 50px;
     max-width: 100%;
-    height: 90px;
     flex-direction: row;
+    background-color: #fff;
+    border-bottom: 1px solid #e0e0e0;
   }
 `;
 const Menu = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
   @media (max-width: 700px) {
     flex-direction: row;
     align-items: center;
-    height: 60px;
   }
 `;
 const Item = styled.div`
@@ -38,24 +40,27 @@ const Item = styled.div`
   justify-content: center;
   align-items: center;
   background-color: white;
-  width: 42px;
-  height: 42px;
-  margin: 12px 0px;
-  border-radius: 50%;
+  width: 100%;
+  height: 50px;
   overflow: hidden;
   font-size: 1.5rem;
-
   cursor: pointer;
-
+  svg {
+  }
   &:hover {
     background-color: #d6d1d1;
-    animation: rotateAnimation 0.4s;
-    /* transform: rotate(-25deg); */
+    svg {
+      animation: rotateAnimation 0.4s;
+    }
+    img {
+      animation: rotateAnimation 0.4s;
+    }
   }
+
   @media (max-width: 700px) {
-    width: 42px;
-    height: 42px;
-    margin: 2px 6px;
+    width: 32px;
+
+    font-size: 1rem;
   }
   @keyframes rotateAnimation {
     0% {
@@ -72,7 +77,27 @@ const Item = styled.div`
 
 const Img = styled.img`
   width: 100%;
+  @media (max-width: 700px) {
+    border-radius: 999px;
+  }
 `;
+
+const LogOutBtn = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 97%;
+  height: 42px;
+  background-color: #fff;
+  color: #bd1818;
+  font-size: 1.5rem;
+  cursor: pointer;
+  @media (max-width: 700px) {
+    width: 42px;
+    height: 42px;
+  }
+`;
+
 const Navbar = () => {
   const navigate = useNavigate();
   const { setIsShow } = useModalContext();
@@ -98,7 +123,9 @@ const Navbar = () => {
     <Nav>
       <Menu>
         <Link to="/">
-          <Item>HOME</Item>
+          <Item>
+            <BiSolidHome />
+          </Item>
         </Link>
         <Item onClick={showModal}>
           <BsPencil />
@@ -115,13 +142,13 @@ const Navbar = () => {
         </Link>
         <Link to="/profile">
           <Item>
-            {userPhotoURL ? <Img src={userPhotoURL} /> : <BiUserCircle />}
+            <BiUserCircle />
           </Item>
         </Link>
       </Menu>
-      <Item onClick={onLogOut}>
+      <LogOutBtn onClick={onLogOut}>
         <BiLogOut />
-      </Item>
+      </LogOutBtn>
     </Nav>
   );
 };
