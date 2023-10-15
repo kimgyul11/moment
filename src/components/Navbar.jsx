@@ -35,6 +35,7 @@ const Menu = styled.div`
     align-items: center;
   }
 `;
+
 const Item = styled.div`
   display: flex;
   justify-content: center;
