@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { auth } from "../utils/firebase";
 import { useModalContext } from "../context/ModalContext";
 import { BsPencil } from "react-icons/bs";
-import { AiOutlineHome } from "react-icons/ai";
 import { BiUserCircle, BiLogOut } from "react-icons/bi";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { LiaSearchSolid } from "react-icons/lia";
@@ -99,9 +98,7 @@ const Navbar = () => {
     <Nav>
       <Menu>
         <Link to="/">
-          <Item>
-            <AiOutlineHome />
-          </Item>
+          <Item>HOME</Item>
         </Link>
         <Item onClick={showModal}>
           <BsPencil />
