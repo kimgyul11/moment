@@ -16,6 +16,7 @@ import {
 
 import ProfileMomentBox from "../../components/profile/profileMoment";
 import classes from "../profile/Profile.module.css";
+import { useNavigate } from "react-router-dom";
 
 const Wrap = styled.div`
   width: 100%;
@@ -49,6 +50,7 @@ const ProfileInfo = styled.div`
   height: 200px;
 
   img {
+    border: 1px solid #e0e0e0;
     width: 100px;
     height: 100px;
     border-radius: 999px;
@@ -96,6 +98,7 @@ const RightInfo = styled.div`
   flex-direction: column;
   padding: 12px;
   width: 50%;
+
   @media (max-width: 800px) {
     width: 100%;
   }
@@ -125,8 +128,21 @@ const Tab = styled.div`
 const MomentWrap = styled.div`
   width: 100%;
   height: 100%;
+  overflow: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  border: 1px solid #e0e0e0;
+  padding: 12px;
 `;
-
+const EmptyComment = styled.p`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+`;
 const Profile = () => {
   const [likeMoment, setLikeMoment] = useState([]);
   const [myMoments, setMyMoments] = useState([]);
@@ -139,61 +155,14 @@ const Profile = () => {
   const [newDisplayName, setNewDisplayName] = useState(displayName);
   const [activeTab, setActiveTab] = useState("like");
   const [isEdit, setIsEdit] = useState(false);
+
+  const navigate = useNavigate();
+
   const onChange = (e) => {
     const {
       target: { value },
     } = e;
     setNewDisplayName(value);
-  };
-  const onChangeAvatar = async (e) => {
-    const { files } = e.target;
-    if (user && files && files.length === 1) {
-      const file = files[0];
-      const locationRef = ref(storage, `avatars/${user.uid}`);
-      const result = await uploadBytes(locationRef, file);
-      const avatarUrl = await getDownloadURL(result.ref);
-      setUserPhoto(avatarUrl);
-      await updateProfile(user, { photoURL: userPhoto });
-      Promise.all(
-        myMoments.map(async (mo) => {
-          const ref = doc(db, "moment", mo.id);
-          await updateDoc(ref, { userPhoto: user.photoURL });
-          return mo; // 현재 요소를 그대로 반환
-        })
-      )
-        .then((updatedMoments) => {
-          setMyMoments(updatedMoments);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-    console.log(user.photoURL);
-  };
-
-  //유저이름 변경,게시글 이름도 모두 변경
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    if (user) {
-      await updateProfile(user, {
-        displayName: newDisplayName,
-      });
-      setDisplayName(newDisplayName);
-      setIsEdit(false);
-      Promise.all(
-        myMoments.map(async (mo) => {
-          const ref = doc(db, "moment", mo.id);
-          await updateDoc(ref, { username: newDisplayName });
-          return mo; // 현재 요소를 그대로 반환
-        })
-      )
-        .then((updatedMoments) => {
-          setMyMoments(updatedMoments);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
   };
 
   //팔로잉하는 유저 가져오기
@@ -204,7 +173,7 @@ const Profile = () => {
         setFollowingIds([""]);
         doc
           .data()
-          .users.map((user) =>
+          .users?.map((user) =>
             setFollowingIds((prev) => (prev ? [...prev, user.id] : []))
           );
       });
@@ -267,51 +236,78 @@ const Profile = () => {
     };
   }, [user, activeTab]);
 
+  console.log(userPhoto);
   return (
     <Wrap>
       <ProfileWrap>
         <LeftInfo>
           <ProfileInfo>
-            <img src={userPhoto ? userPhoto : url} />
+            {userPhoto ? (
+              <img src={userPhoto} />
+            ) : (
+              <svg
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.493a1.23 1.23 0 00.41 1.412A9.957 9.957 0 0010 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003z" />
+              </svg>
+            )}
+
             <p>{displayName}</p>
-            <button>프로필 수정하기</button>
+            <button onClick={() => navigate("/profile/edit")}>
+              프로필 수정하기
+            </button>
           </ProfileInfo>
           <Title>내가 기록한 순간들✨</Title>
           <ProfileMoment>
-            {myMoments.map((moment) => (
-              <ProfileMomentBox moment={moment} key={moment.id} />
-            ))}
+            {myMoments.length > 0 ? (
+              myMoments.map((moment) => (
+                <ProfileMomentBox moment={moment} key={moment.id} />
+              ))
+            ) : (
+              <EmptyComment>아직 기록한 순간이 없습니다!</EmptyComment>
+            )}
           </ProfileMoment>
         </LeftInfo>
         {/* 내가 작성한 게시글 보기 */}
         <RightInfo>
           <Tab>
             <p
-              className={activeTab === "like" && classes.active}
+              className={activeTab === "like" ? classes.active : ""}
               onClick={() => setActiveTab("like")}
             >
-              좋아요한 게시글
+              좋아요한 모멘트
             </p>
             <p
-              className={activeTab === "following" && classes.active}
+              className={activeTab === "following" ? classes.active : ""}
               onClick={() => setActiveTab("following")}
             >
-              팔로우 게시글
+              친구의 모멘트
             </p>
           </Tab>
           <MomentWrap>
             {activeTab === "like" && (
               <>
-                {likeMoment.map((moment) => (
-                  <ProfileMomentBox moment={moment} key={moment.id} />
-                ))}
+                {likeMoment.length > 0 ? (
+                  likeMoment.map((moment) => (
+                    <ProfileMomentBox moment={moment} key={moment.id} />
+                  ))
+                ) : (
+                  <EmptyComment>아직 좋아요한 모멘트가 없습니다!</EmptyComment>
+                )}
               </>
             )}
             {activeTab === "following" && (
               <>
-                {followingMoments.map((moment) => (
-                  <ProfileMomentBox moment={moment} key={moment.id} />
-                ))}
+                {followingMoments.length > 0 ? (
+                  followingMoments.map((moment) => (
+                    <ProfileMomentBox moment={moment} key={moment.id} />
+                  ))
+                ) : (
+                  <EmptyComment>아직 모멘트가 없습니다!</EmptyComment>
+                )}
               </>
             )}
           </MomentWrap>

@@ -20,8 +20,6 @@ const Home = () => {
   console.log(user);
   return (
     <Wrap>
-      {/* <BestMoment /> */}
-
       <Moment />
     </Wrap>
   );

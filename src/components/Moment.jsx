@@ -1,15 +1,9 @@
-import {
-  collection,
-  limit,
-  onSnapshot,
-  orderBy,
-  query,
-} from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { auth, db } from "../utils/firebase";
 import MomentBox from "./MomentBox";
-import { useParams } from "react-router-dom";
+import Loading from "../pages/Loading";
 
 const MomentWrap = styled.div`
   width: 100%;
@@ -44,11 +38,11 @@ const Moment = () => {
 
   return (
     <MomentWrap>
-      {isLoading
-        ? "로딩중"
-        : moments.map((moment) => (
-            <MomentBox key={moment.id} moment={moment} />
-          ))}
+      {isLoading ? (
+        <Loading />
+      ) : (
+        moments.map((moment) => <MomentBox key={moment.id} moment={moment} />)
+      )}
     </MomentWrap>
   );
 };

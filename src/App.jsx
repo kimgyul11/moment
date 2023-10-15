@@ -18,6 +18,8 @@ import MomentDetail from "./pages/moment/momentDetail";
 import MomentEdit from "./pages/moment/momentEdit";
 import Profile from "./pages/profile/Profile";
 import NotificationPage from "./pages/notification";
+import ProfileEdit from "./pages/profile/ProfileEdit";
+import ProtectedRoute from "./components/protectedRoute";
 
 const GlobalStyles = createGlobalStyle`
   ${reset};
@@ -36,7 +38,11 @@ const GlobalStyles = createGlobalStyle`
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,
+    element: (
+      <ProtectedRoute>
+        <Layout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: "",
@@ -46,7 +52,7 @@ const router = createBrowserRouter([
         path: "/profile",
         element: <Profile />,
       },
-      { path: "/profile/edit", element: <Profile /> },
+      { path: "/profile/edit", element: <ProfileEdit /> },
       {
         path: "/search",
         element: <Search />,

@@ -199,7 +199,7 @@ const CreateMoment = () => {
       const docs = await addDoc(collection(db, "moment"), {
         text,
         createdAt: Date.now(),
-        username: user.displayName || "소셜계정",
+        username: user.displayName || "익명유저",
         userId: user.uid,
         userPhoto: user.photoURL,
         hashTag: tags,

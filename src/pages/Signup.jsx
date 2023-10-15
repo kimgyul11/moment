@@ -146,7 +146,7 @@ const Signup = () => {
           />
           {completePW && <Mark src="/check.png" alt="완료마크" />}
           {enteredPW_hasErr && (
-            <ErrText>특수문자를 포함한 6글자 이상이여야합니다.</ErrText>
+            <ErrText>특수문자를 포함한 6글자 이상 이어야 합니다.</ErrText>
           )}
         </InputWrap>
         <InputWrap>

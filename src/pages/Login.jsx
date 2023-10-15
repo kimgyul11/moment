@@ -11,13 +11,13 @@ import {
 import GoogleBtn from "../components/GoogleBtn";
 import styled from "styled-components";
 import GithubBtn from "../components/GithubBtn";
-import Anonymous from "../components/Anonymous";
 
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { FirebaseError } from "firebase/app";
 import { toast } from "react-toastify";
+import Anonymous from "../components/login/Anonymous";
 
 const SocialBtnWrap = styled.div`
   width: 100%;
