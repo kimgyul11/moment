@@ -19,6 +19,7 @@ const Wrap = styled.div`
 
 const CommentWrap = styled.div`
   border: 1px solid #e0e0e0;
+  min-height: 50px;
   padding: 12px;
   border-radius: 5px;
   margin-top: 15px;
@@ -27,6 +28,15 @@ const CommentWrap = styled.div`
   @media (max-width: 800px) {
     width: 100%;
   }
+`;
+const EmptyComment = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  color: #716f6f;
+  width: 100%;
+  height: 100%;
 `;
 
 const MomentDetail = () => {
@@ -59,7 +69,7 @@ const MomentDetail = () => {
           <MomentBox moment={moment} />
           <CommentForm moment={moment} />
           <CommentWrap>
-            {moment.comment &&
+            {moment.comment ? (
               moment.comment
                 .slice(0)
                 .map((data) => (
@@ -68,7 +78,10 @@ const MomentDetail = () => {
                     key={data.commentId}
                     moment={moment}
                   />
-                ))}
+                ))
+            ) : (
+              <EmptyComment>아직 댓글이 없습니다.</EmptyComment>
+            )}
           </CommentWrap>
         </Wrap>
       ) : (

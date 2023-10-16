@@ -133,7 +133,11 @@ const ButtonWrap = styled.div`
     background-color: #bfbfbf;
     border-radius: 999px;
     margin: 0px 4px;
+    font-weight: 700;
     cursor: pointer;
+    svg {
+      margin-right: 2px;
+    }
   }
 `;
 const EditBtnWrap = styled.div`
@@ -162,6 +166,18 @@ const EditBtnWrap = styled.div`
 
 const ServiceBtnWrap = styled.div`
   display: flex;
+  button {
+    &:nth-child(1) {
+      border: 1px solid #ec6060;
+      background-color: #fff;
+      color: #ec6060;
+    }
+    &:nth-child(2) {
+      border: 1px solid #2e2c2c;
+      background-color: #fff;
+      color: #2e2c2c;
+    }
+  }
 `;
 export const url =
   "https://e7.pngegg.com/pngimages/906/222/png-clipart-computer-icons-user-profile-avatar-french-people-computer-network-heroes-thumbnail.png";
@@ -202,7 +218,7 @@ const MomentBox = ({ moment }) => {
         await addDoc(collection(db, "notifications"), {
           createdAt: Date.now(),
           content: `${
-            user.displayName || user.email
+            user.displayName || user.email || "익명의 사용자"
           }님이 게시글에 좋아요를 눌렀습니다.`,
           url: `/moment/${moment.id}`,
           isRead: false,
@@ -210,7 +226,7 @@ const MomentBox = ({ moment }) => {
         });
       }
     } else {
-      //2.like필드에 로그인한 유저가 없다면 추가
+      //2.like필드에 좋아요한 유저가 없다면 추가
       await updateDoc(momentRef, {
         likes: arrayUnion(user.uid),
         likeCount: moment.likeCount ? moment.likeCount + 1 : 1,
