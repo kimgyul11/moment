@@ -102,19 +102,11 @@ const LogOutBtn = styled.div`
 const Navbar = () => {
   const navigate = useNavigate();
   const { setIsShow } = useModalContext();
-  const { user } = useAuthContext();
-  const [userPhotoURL, setUserPhotoURL] = useState(user.photoURL);
-  useEffect(() => {
-    setUserPhotoURL(user.photoURL);
-  }, [user.photoURL]);
-
-  const onLogOut = async () => {
-    const ok = confirm("정말 로그아웃 하실건가요?");
-    if (ok) {
-      await auth.signOut();
-      toast.success("로그아웃 되었습니다.");
-      navigate("/login");
-    }
+  const { onLogOut } = useAuthContext();
+  const onClickLogout = () => {
+    onLogOut();
+    toast.success("로그아웃 되었습니다.");
+    navigate("/login");
   };
   const showModal = () => {
     setIsShow(true);
@@ -147,7 +139,7 @@ const Navbar = () => {
           </Item>
         </Link>
       </Menu>
-      <LogOutBtn onClick={onLogOut}>
+      <LogOutBtn onClick={onClickLogout}>
         <BiLogOut />
       </LogOutBtn>
     </Nav>

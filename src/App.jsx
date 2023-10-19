@@ -20,6 +20,7 @@ import Profile from "./pages/profile/Profile";
 import NotificationPage from "./pages/notification";
 import ProfileEdit from "./pages/profile/ProfileEdit";
 import ProtectedRoute from "./components/protectedRoute";
+import { AuthContextProvider } from "./context/AuthContext";
 
 const GlobalStyles = createGlobalStyle`
   ${reset};
@@ -84,7 +85,13 @@ function App() {
     <>
       <GlobalStyles />
       <ToastContainer autoClose={1000} newestOnTop hideProgressBar />
-      {isLoading ? <Loading /> : <RouterProvider router={router} />}
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <AuthContextProvider>
+          <RouterProvider router={router} />
+        </AuthContextProvider>
+      )}
     </>
   );
 }

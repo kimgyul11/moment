@@ -81,17 +81,12 @@ const Signup = () => {
       console.log(credentials);
       await updateProfile(credentials.user, { displayName: enteredNN });
       navigate("/login");
-      toast.success("🎉 성공적으로 가입되었습니다. ");
+      toast.success("🎉 환영합니다. ");
     } catch (e) {
       toast.error(e.code);
     } finally {
       setLoading(false);
     }
-
-    // resetEmail();
-    // resetNN();
-    // resetPW();
-    // resetPWC();
   };
   return (
     <Wrap>

@@ -1,9 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { auth, db, storage } from "../../utils/firebase";
-import { url } from "../../components/MomentBox";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { updateProfile } from "firebase/auth";
+
 import {
   collection,
   doc,
@@ -152,18 +150,10 @@ const Profile = () => {
 
   const [displayName, setDisplayName] = useState(user.displayName || "사용자");
   const [userPhoto, setUserPhoto] = useState(user.photoURL);
-  const [newDisplayName, setNewDisplayName] = useState(displayName);
+
   const [activeTab, setActiveTab] = useState("like");
-  const [isEdit, setIsEdit] = useState(false);
 
   const navigate = useNavigate();
-
-  const onChange = (e) => {
-    const {
-      target: { value },
-    } = e;
-    setNewDisplayName(value);
-  };
 
   //팔로잉하는 유저 가져오기
   const getFollowingIds = useCallback(() => {
@@ -236,7 +226,6 @@ const Profile = () => {
     };
   }, [user, activeTab]);
 
-  console.log(userPhoto);
   return (
     <Wrap>
       <ProfileWrap>
