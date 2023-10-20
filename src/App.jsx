@@ -21,6 +21,8 @@ import NotificationPage from "./pages/notification";
 import ProfileEdit from "./pages/profile/ProfileEdit";
 import ProtectedRoute from "./components/protectedRoute";
 import { AuthContextProvider } from "./context/AuthContext";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 const GlobalStyles = createGlobalStyle`
   ${reset};
@@ -69,6 +71,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const queryClient = new QueryClient();
   const [isLoading, setIsLoading] = useState(true);
 
   //유저정보 초기화 함수
@@ -76,7 +79,6 @@ function App() {
     await auth.authStateReady();
     setIsLoading(false);
   };
-
   useEffect(() => {
     init();
   }, []);
@@ -88,9 +90,12 @@ function App() {
       {isLoading ? (
         <Loading />
       ) : (
-        <AuthContextProvider>
-          <RouterProvider router={router} />
-        </AuthContextProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthContextProvider>
+            <RouterProvider router={router} />
+            <ReactQueryDevtools />
+          </AuthContextProvider>
+        </QueryClientProvider>
       )}
     </>
   );

@@ -15,6 +15,7 @@ import {
 import ProfileMomentBox from "../../components/profile/profileMoment";
 import classes from "../profile/Profile.module.css";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../context/AuthContext";
 
 const Wrap = styled.div`
   width: 100%;
@@ -147,12 +148,9 @@ const Profile = () => {
   const [followingMoments, setFollowingMoments] = useState([]);
   const [followingIds, setFollowingIds] = useState([""]);
   const user = auth.currentUser;
-
   const [displayName, setDisplayName] = useState(user.displayName || "사용자");
   const [userPhoto, setUserPhoto] = useState(user.photoURL);
-
   const [activeTab, setActiveTab] = useState("like");
-
   const navigate = useNavigate();
 
   //팔로잉하는 유저 가져오기

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { db } from "../../utils/firebase";
 import dayjs from "dayjs";
+import useNotification from "../../hooks/useNotification";
 
 const Box = styled.div`
   position: relative;
@@ -59,27 +60,20 @@ const Check = styled.span`
 
 export default function NotificationBox({ notification }) {
   const navigate = useNavigate();
-  //읽음버튼
-  const onClickNotiChk = async () => {
-    if (!notification.isRead) {
-      const ref = doc(db, "notifications", notification.id);
-      await updateDoc(ref, {
-        isRead: true,
-      });
-    }
+  const { notifiUpdateQuery, notifiDeleteQuery, notifiMoveQuery } =
+    useNotification(notification);
+
+  //읽기 버튼
+  const onClickNotiChk = () => {
+    notifiUpdateQuery.mutate();
   };
   //삭제버튼
-  const onClickNotiDel = async () => {
-    await deleteDoc(doc(db, "notifications", notification.id));
+  const onClickNotiDel = () => {
+    notifiDeleteQuery.mutate();
   };
   //이동버튼
   const onClickMove = async () => {
-    if (!notification.isRead) {
-      const ref = doc(db, "notifications", notification.id);
-      await updateDoc(ref, {
-        isRead: true,
-      });
-    }
+    notifiMoveQuery.mutate();
     navigate(notification.url);
   };
   return (

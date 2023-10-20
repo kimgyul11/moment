@@ -9,6 +9,8 @@ import { LiaSearchSolid } from "react-icons/lia";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
+import useNotification from "../hooks/useNotification";
+import NotificationCnt from "./notification/NotificationCnt";
 const Nav = styled.div`
   min-width: 60px;
   max-width: 60px;
@@ -37,6 +39,7 @@ const Menu = styled.div`
 `;
 
 const Item = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -111,7 +114,9 @@ const Navbar = () => {
   const showModal = () => {
     setIsShow(true);
   };
-
+  const {
+    notifiQuery: { data, isLoading },
+  } = useNotification();
   return (
     <Nav>
       <Menu>
@@ -131,6 +136,7 @@ const Navbar = () => {
         <Link to="/notification">
           <Item>
             <IoIosNotificationsOutline />
+            {!isLoading && data?.length > 0 && <NotificationCnt data={data} />}
           </Item>
         </Link>
         <Link to="/profile">

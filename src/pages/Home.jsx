@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { auth } from "../utils/firebase";
 import Moment from "../components/Moment";
 
 const Wrap = styled.div`

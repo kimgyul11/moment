@@ -59,7 +59,7 @@ export default function ProfileMomentBox({ moment }) {
     <Box onClick={onClick}>
       <Header>
         <Profile>
-          <img src={moment.userPhoto ? moment.userPhoto : ""} />
+          <img src={moment.userPhoto ? moment.userPhoto : "profile.png"} />
           <p>{moment.username}</p>
         </Profile>
         <p>{dayjs(moment.createdAt).format("YYYY년 MM월 DD일 HH:mm")}</p>
