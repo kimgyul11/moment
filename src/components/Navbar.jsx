@@ -136,7 +136,9 @@ const Navbar = () => {
         <Link to="/notification">
           <Item>
             <IoIosNotificationsOutline />
-            {!isLoading && data?.length > 0 && <NotificationCnt data={data} />}
+            {!isLoading && data?.filter((noti) => !noti.isRead).length > 0 && (
+              <NotificationCnt data={data} />
+            )}
           </Item>
         </Link>
         <Link to="/profile">

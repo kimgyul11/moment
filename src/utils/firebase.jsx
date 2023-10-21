@@ -28,7 +28,7 @@ export const auth = getAuth(app);
 export const storage = getStorage(app);
 export const db = getFirestore(app);
 
-//로그인
+//로그아웃
 export const onLogOut = async () => {
   const ok = confirm("정말 로그아웃 하실건가요?");
   if (ok) {

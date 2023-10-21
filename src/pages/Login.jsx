@@ -31,6 +31,14 @@ const InputWrap = styled.div`
   width: 100%;
   margin-bottom: 15px;
 `;
+
+const ErrorText = styled.p`
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 5px;
+  font-weight: 700;
+  color: #e94242;
+`;
 const Login = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -44,8 +52,12 @@ const Login = () => {
     setError("");
     if (isLoading || loginInfo.email === "" || loginInfo.password === "")
       return;
+    if (loginInfo.password.length < 6) {
+      setError("암호가 너무 짧습니다.");
+      return;
+    }
+
     try {
-      console.log(loginInfo.email, loginInfo.password);
       setIsLoading(true);
       await signInWithEmailAndPassword(
         auth,
@@ -55,9 +67,15 @@ const Login = () => {
       navigate("/");
       toast.success("로그인 완료!");
     } catch (e) {
-      toast.error("문제가 발생했습니다.");
-      if (e instanceof FirebaseError) {
-        setError(e);
+      if (
+        e.code === "auth/invalid-login-credentials" ||
+        err.code == "auth/user-not-found" ||
+        err.code == "auth/invalid-email"
+      ) {
+        toast.error("계정 정보를 다시 확인해주세요.");
+      }
+      if (err.code == "auth/too-many-requests") {
+        toast.error("잠시 후 다시 시도해주세요.");
       }
     } finally {
       setIsLoading(false);
@@ -104,8 +122,8 @@ const Login = () => {
             required
           />
         </InputWrap>
-        <Button>로그인</Button>
-        <p>{error}</p>
+        <Button disabled={isLoading}>로그인</Button>
+        <ErrorText>{error}</ErrorText>
         <SocialBtnWrap>
           <GoogleBtn />
           <GithubBtn />

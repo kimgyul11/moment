@@ -26,9 +26,20 @@ const ModalContainer = styled.div`
   max-width: 500px;
   max-height: 600px;
   height: 90vh;
+  animation: slide-up-fade-in 0.4s ease-out forwards;
   @media (max-width: 700px) {
     width: 100vh;
     max-height: 800px;
+  }
+  @keyframes slide-up-fade-in {
+    0% {
+      transform: translateY(30px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
   }
 `;
 

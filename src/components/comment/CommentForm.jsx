@@ -66,7 +66,7 @@ export default function CommentForm({ moment }) {
         comment: comment,
         uid: user.uid,
         email: user.email,
-        nickname: user.displayName,
+        nickname: user.displayName || "익명의 사용자",
         createdAt: Date.now(),
       };
       await updateDoc(momentRef, {
@@ -77,7 +77,7 @@ export default function CommentForm({ moment }) {
         await addDoc(collection(db, "notifications"), {
           createdAt: Date.now(),
           content: `${
-            user.displayName || user.displayName || "익명의 사용자"
+            user.displayName || "익명의 사용자"
           }님이 게시글에 댓글을 남겼습니다.`,
           url: `/moment/${moment.id}`,
           isRead: false,
