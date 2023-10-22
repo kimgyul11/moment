@@ -5,9 +5,9 @@ import { db } from "../../utils/firebase";
 import styled from "styled-components";
 import MomentBox from "../../components/MomentBox";
 import CommentForm from "../../components/comment/CommentForm";
-import dayjs from "dayjs";
 import CommentBox from "../../components/comment/CommentBox";
 import Loading from "../Loading";
+import { motion } from "framer-motion";
 
 const Wrap = styled.div`
   width: 100%;
@@ -17,7 +17,7 @@ const Wrap = styled.div`
   padding: 12px;
 `;
 
-const CommentWrap = styled.div`
+const CommentWrap = styled(motion.div)`
   border: 1px solid #e0e0e0;
   min-height: 50px;
   padding: 12px;
@@ -25,6 +25,9 @@ const CommentWrap = styled.div`
   margin-top: 15px;
   width: 50%;
   overflow: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
   @media (max-width: 800px) {
     width: 100%;
   }
@@ -34,7 +37,7 @@ const EmptyComment = styled.div`
   justify-content: center;
   align-items: center;
   font-weight: 700;
-  color: #716f6f;
+  color: #3f3f3f;
   width: 100%;
   height: 100%;
 `;
@@ -43,6 +46,7 @@ const MomentDetail = () => {
   const params = useParams();
   const [moment, setMoment] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  console.log(moment.comment);
 
   const getMoment = useCallback(async () => {
     if (params.id) {
@@ -69,7 +73,7 @@ const MomentDetail = () => {
           <MomentBox moment={moment} />
           <CommentForm moment={moment} />
           <CommentWrap>
-            {moment.comment ? (
+            {moment.comment.length > 0 ? (
               moment.comment
                 .slice(0)
                 .map((data) => (

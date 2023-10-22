@@ -1,6 +1,7 @@
 import styled from "styled-components";
+import { motion } from "framer-motion";
 
-export const Container = styled.span`
+export const Container = styled(motion.span)`
   background-color: white;
   border: 1px solid #e0e0e0;
   width: 50px;
@@ -59,6 +60,6 @@ export const Container = styled.span`
     }
   }
 `;
-export const Logo = styled.img`
+export const Logo = styled(motion.img)`
   height: 25px;
 `;

@@ -4,8 +4,9 @@ import styled from "styled-components";
 import { db } from "../../utils/firebase";
 import dayjs from "dayjs";
 import useNotification from "../../hooks/useNotification";
+import { motion } from "framer-motion";
 
-const Box = styled.div`
+const Box = styled(motion.div)`
   position: relative;
   display: flex;
   align-items: center;
@@ -77,7 +78,7 @@ export default function NotificationBox({ notification }) {
     navigate(notification.url);
   };
   return (
-    <Box>
+    <Box initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
       <Date>
         {dayjs(notification.createdAt).format("YYYY년 MM월 DD일 HH:mm")}
       </Date>

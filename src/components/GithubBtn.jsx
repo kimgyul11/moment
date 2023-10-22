@@ -16,8 +16,13 @@ const GithubBtn = () => {
     }
   };
   return (
-    <Container onClick={onClick}>
-      <Logo src="/github-log.svg" />
+    <Container onClick={onclick} initial={{ scale: 0 }} animate={{ scale: 1 }}>
+      <Logo
+        src="/github-log.svg"
+        initial={{ rotate: 35, opacity: 0 }}
+        animate={{ rotate: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      />
       <p>GitHub로 로그인</p>
     </Container>
   );

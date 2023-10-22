@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useModalContext } from "../context/ModalContext";
 import { GrClose } from "react-icons/gr";
+import { AnimatePresence, motion } from "framer-motion";
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -15,7 +16,7 @@ const ModalOverlay = styled.div`
   z-index: 10000;
 `;
 
-const ModalContainer = styled.div`
+const ModalContainer = styled(motion.div)`
   background: white;
   position: relative;
   padding: 20px;
@@ -26,20 +27,10 @@ const ModalContainer = styled.div`
   max-width: 500px;
   max-height: 600px;
   height: 90vh;
-  animation: slide-up-fade-in 0.4s ease-out forwards;
+
   @media (max-width: 700px) {
     width: 100vh;
     max-height: 800px;
-  }
-  @keyframes slide-up-fade-in {
-    0% {
-      transform: translateY(30px);
-      opacity: 0;
-    }
-    100% {
-      transform: translateY(0);
-      opacity: 1;
-    }
   }
 `;
 
@@ -60,7 +51,15 @@ const Modal = ({ children }) => {
   };
   return (
     <ModalOverlay>
-      <ModalContainer>
+      <ModalContainer
+        variants={{
+          hidden: { opacity: 0, y: 30 },
+          visible: { opacity: 1, y: 0 },
+        }}
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
+      >
         <CloseButton onClick={onClose}>
           <GrClose />
         </CloseButton>

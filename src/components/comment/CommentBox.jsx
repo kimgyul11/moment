@@ -3,8 +3,9 @@ import styled from "styled-components";
 import { auth, db } from "../../utils/firebase";
 import { arrayRemove, doc, updateDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
 
-const Wrap = styled.div`
+const Wrap = styled(motion.div)`
   position: relative;
   width: 100%;
   border-bottom: 1px solid #e0e0e0;
@@ -70,7 +71,11 @@ export default function CommentBox({ data, moment }) {
     }
   };
   return (
-    <Wrap>
+    <Wrap
+      layout
+      initial={{ opacity: 0, y: -30 }}
+      animate={{ opacity: 1, y: 0 }}
+    >
       <Header>
         <p>{data?.nickname}</p>
         <p>{dayjs(data?.createdAt).format("YYYY년 MM월 DD일 HH:mm")}</p>

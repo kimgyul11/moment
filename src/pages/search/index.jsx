@@ -10,6 +10,7 @@ import {
 import { db } from "../../utils/firebase";
 import { useParams } from "react-router-dom";
 import MomentBox from "../../components/MomentBox";
+import { motion } from "framer-motion";
 
 const Wrap = styled.div`
   width: 100%;
@@ -19,31 +20,33 @@ const Wrap = styled.div`
   align-items: center;
 `;
 const SearchBox = styled.div`
+  margin-top: 50px;
   width: 50%;
   text-align: center;
   display: flex;
   flex-direction: column;
 
   input {
-    width: 250px;
+    width: 350px;
     height: 40px;
     border: 1px solid #e0e0e0;
     border-radius: 999px;
     outline: none;
     margin: 20px auto;
     padding: 12px;
+    text-align: center;
+    font-weight: 700;
   }
-`;
-const Title = styled.span`
-  font-size: 2rem;
 `;
 
 const ContentWrap = styled.div`
   width: 100%;
+
+  height: 70vh;
   display: flex;
   flex-direction: column;
 `;
-const TextBox = styled.p`
+const TextBox = styled(motion.p)`
   width: 50%;
   height: 50px;
   display: flex;
@@ -95,18 +98,20 @@ const Search = () => {
   return (
     <Wrap>
       <SearchBox>
-        <Title>Search</Title>
-        <input
-          value={dataQuery}
-          onChange={onChange}
-          placeholder="해시태그를 입력해보세요!"
-        />
+        <input value={dataQuery} onChange={onChange} placeholder="# 해시태그" />
       </SearchBox>
       <ContentWrap>
         {moments.length > 0 ? (
           moments.map((moment) => <MomentBox key={moment.id} moment={moment} />)
         ) : (
-          <TextBox>검색결과가 없습니다🔎</TextBox>
+          <TextBox
+            initial={{ scale: 0, opacity: 0, y: -20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+          >
+            {!params.id && !dataQuery
+              ? "태그를 검색해 보세요!"
+              : "검색된 태그가 없습니다😭"}
+          </TextBox>
         )}
       </ContentWrap>
     </Wrap>

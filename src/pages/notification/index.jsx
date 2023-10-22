@@ -9,8 +9,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import useNotification from "../../hooks/useNotification";
-import Loading from "../Loading";
+import { motion } from "framer-motion";
 
 const Wrap = styled.div`
   width: 100%;
@@ -28,7 +27,7 @@ const Notifibox = styled.div`
     width: 100%;
   }
 `;
-const TextBox = styled.div`
+const TextBox = styled(motion.div)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -75,7 +74,14 @@ export default function NotificationPage() {
           ))
         ) : (
           <>
-            <TextBox>알림이 없습니다.</TextBox>
+            <TextBox>
+              <motion.p
+                initial={{ rotate: 10, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+              >
+                아직 알림이 없습니다.
+              </motion.p>
+            </TextBox>
           </>
         )}
       </Notifibox>

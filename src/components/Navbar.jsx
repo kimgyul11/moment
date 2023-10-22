@@ -1,16 +1,16 @@
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { auth } from "../utils/firebase";
 import { useModalContext } from "../context/ModalContext";
 import { BsPencil } from "react-icons/bs";
 import { BiUserCircle, BiLogOut, BiSolidHome } from "react-icons/bi";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { LiaSearchSolid } from "react-icons/lia";
 import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
+
 import { useAuthContext } from "../context/AuthContext";
 import useNotification from "../hooks/useNotification";
 import NotificationCnt from "./notification/NotificationCnt";
+
 const Nav = styled.div`
   min-width: 60px;
   max-width: 60px;
@@ -79,13 +79,6 @@ const Item = styled.div`
   }
 `;
 
-const Img = styled.img`
-  width: 100%;
-  @media (max-width: 700px) {
-    border-radius: 999px;
-  }
-`;
-
 const LogOutBtn = styled.div`
   display: flex;
   justify-content: center;
@@ -107,9 +100,12 @@ const Navbar = () => {
   const { setIsShow } = useModalContext();
   const { onLogOut } = useAuthContext();
   const onClickLogout = () => {
-    onLogOut();
-    toast.success("로그아웃 되었습니다.");
-    navigate("/login");
+    const ok = confirm("정말 로그아웃 하실건가요?");
+    if (ok) {
+      onLogOut();
+      toast.success("로그아웃 되었습니다.");
+      navigate("/login");
+    }
   };
   const showModal = () => {
     setIsShow(true);

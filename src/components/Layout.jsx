@@ -6,6 +6,7 @@ import Modal from "./Modal";
 import CreateMoment from "./CreateMoment";
 import { auth } from "../utils/firebase";
 import { useEffect, useState } from "react";
+import { AnimatePresence } from "framer-motion";
 
 const Wrap = styled.div`
   width: 100%;
@@ -24,12 +25,13 @@ const Layout = () => {
 
   return (
     <>
-      {isShow && (
-        <Modal>
-          <CreateMoment />
-        </Modal>
-      )}
-
+      <AnimatePresence>
+        {isShow && (
+          <Modal>
+            <CreateMoment />
+          </Modal>
+        )}
+      </AnimatePresence>
       <Wrap>
         <Navbar user={user} />
         <Outlet />

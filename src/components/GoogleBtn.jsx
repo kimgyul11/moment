@@ -15,8 +15,13 @@ const GoogleBtn = () => {
     }
   };
   return (
-    <Container onClick={onclick}>
-      <Logo src="/google-log.svg" />
+    <Container onClick={onclick} initial={{ scale: 0 }} animate={{ scale: 1 }}>
+      <Logo
+        initial={{ rotate: 35, opacity: 0 }}
+        animate={{ rotate: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        src="/google-log.svg"
+      />
       <p>Google로 로그인</p>
     </Container>
   );

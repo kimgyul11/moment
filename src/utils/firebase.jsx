@@ -30,10 +30,7 @@ export const db = getFirestore(app);
 
 //로그아웃
 export const onLogOut = async () => {
-  const ok = confirm("정말 로그아웃 하실건가요?");
-  if (ok) {
-    await auth.signOut();
-  }
+  await auth.signOut();
 };
 
 //[알림]1.알림 가져오기
