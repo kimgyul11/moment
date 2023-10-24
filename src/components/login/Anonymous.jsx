@@ -2,8 +2,9 @@ import { signInAnonymously } from "firebase/auth";
 
 import { toast } from "react-toastify";
 import { Container, Logo } from "../../assets/styled_component/social-btn";
-import { auth } from "../../utils/firebase";
+
 import { useNavigate } from "react-router-dom";
+import { auth } from "../../utils/firebase";
 
 const Anonymous = () => {
   const navigate = useNavigate();
@@ -18,7 +19,12 @@ const Anonymous = () => {
     }
   };
   return (
-    <Container onClick={onclick} initial={{ scale: 0 }} animate={{ scale: 1 }}>
+    <Container
+      onClick={onClick}
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <Logo
         src="/anonymous.png"
         initial={{ rotate: 35, opacity: 0 }}

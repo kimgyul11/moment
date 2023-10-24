@@ -15,6 +15,7 @@ import {
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
 
 const Wrap = styled.div`
   width: 100%;
@@ -22,7 +23,7 @@ const Wrap = styled.div`
   align-items: center;
   justify-content: center;
 `;
-const ProfileWrap = styled.div`
+const ProfileWrap = styled(motion.div)`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -204,7 +205,11 @@ const ProfileEdit = () => {
   console.log(myMoments);
   return (
     <Wrap>
-      <ProfileWrap>
+      <ProfileWrap
+        initial={{ y: -30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      >
         <AvatarUpload htmlFor="avatar">
           {userPhoto ? (
             <UserPhoto src={userPhoto} />

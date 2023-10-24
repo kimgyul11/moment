@@ -1,7 +1,7 @@
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../utils/firebase";
+
 import { Link, useNavigate } from "react-router-dom";
-import useInput from "../hooks/useInput";
+import useInput from "../../hooks/useInput";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import {
@@ -15,7 +15,9 @@ import {
   Mark,
   Title,
   Wrap,
-} from "../assets/styled_component/login-signup";
+} from "../../assets/styled_component/login-signup";
+import { auth } from "../../utils/firebase";
+
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const passwordRegex = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
 

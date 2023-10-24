@@ -46,12 +46,11 @@ const MomentDetail = () => {
   const params = useParams();
   const [moment, setMoment] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  console.log(moment.comment);
 
   const getMoment = useCallback(async () => {
     if (params.id) {
       const docRef = doc(db, "moment", params.id);
-      //댓글 가져와야하므로 onSnapshot으로 처리
+      //댓글 실시간으로 가져와야하므로 onSnapshot으로 처리
       onSnapshot(docRef, (doc) => {
         setMoment({ ...doc.data(), id: doc.id });
       });

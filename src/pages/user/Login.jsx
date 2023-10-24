@@ -1,23 +1,24 @@
 import { Link, useNavigate } from "react-router-dom";
+
+import { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+
+import { toast } from "react-toastify";
+import styled from "styled-components";
+import { auth } from "../../utils/firebase";
+import GoogleBtn from "../../components/login/GoogleBtn";
+import GithubBtn from "../../components/login/GithubBtn";
+import Anonymous from "../../components/login/Anonymous";
+import { motion } from "framer-motion";
 import {
   Button,
-  Form,
   Input,
   Lable,
   Linkbtn,
   Title,
   Wrap,
-} from "../assets/styled_component/login-signup";
-import GoogleBtn from "../components/GoogleBtn";
-import styled from "styled-components";
-import GithubBtn from "../components/GithubBtn";
-
-import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../utils/firebase";
-import { FirebaseError } from "firebase/app";
-import { toast } from "react-toastify";
-import Anonymous from "../components/login/Anonymous";
+  Form,
+} from "../../assets/styled_component/login-signup";
 
 const SocialBtnWrap = styled.div`
   width: 100%;
@@ -92,13 +93,43 @@ const Login = () => {
       setLoginInfo((prev) => ({ ...prev, password: value }));
     }
   };
-
+  const status = {
+    start: { opacity: 0, scale: 0.5, x: -50 },
+    end: { opacity: 1, scale: 1, x: 0, transition: { staggerChildren: 0.05 } },
+  };
   return (
     <Wrap>
       <Form onSubmit={onSubmit}>
-        <Title>
-          <h1>Moment</h1>
-          <em>순간을 기록하다📸</em>
+        <Title
+          variants={{
+            start: { opacity: 0, scale: 0.5 },
+            end: { opacity: 1, scale: 1 },
+          }}
+        >
+          <motion.h1
+            initial="start"
+            animate="end"
+            variants={{
+              start: { opacity: 0, x: -50 },
+              end: { opacity: 1, x: 0 },
+            }}
+          >
+            Moment
+          </motion.h1>
+          <motion.em
+            initial="start"
+            animate="end"
+            variants={{
+              start: { opacity: 0, y: -50 },
+              end: {
+                opacity: 1,
+                y: 0,
+                transition: { staggerChildren: 0.05 },
+              },
+            }}
+          >
+            순간을 기록하다📸
+          </motion.em>
         </Title>
         <InputWrap>
           <Lable>이메일</Lable>

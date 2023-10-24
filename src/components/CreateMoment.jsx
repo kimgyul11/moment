@@ -192,7 +192,6 @@ const CreateMoment = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!user || isLoading || text.trim() === "" || text.length > 180) return;
-
     try {
       setLoading(true);
       //moment업로드

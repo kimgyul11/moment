@@ -77,6 +77,7 @@ export default function NotificationBox({ notification }) {
     notifiMoveQuery.mutate();
     navigate(notification.url);
   };
+
   return (
     <Box initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
       <Date>

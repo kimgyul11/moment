@@ -1,11 +1,18 @@
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { auth, db } from "../utils/firebase";
 import MomentBox from "./MomentBox";
 import Loading from "../pages/Loading";
+import { motion } from "framer-motion";
 
-const MomentWrap = styled.div`
+const MomentWrap = styled(motion.div)`
   width: 100%;
   overflow-y: auto;
 `;
@@ -37,11 +44,15 @@ const Moment = () => {
   }, []);
 
   return (
-    <MomentWrap>
+    <MomentWrap
+      initial={{ opacity: 0, x: -30 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.5, delay: 0.5 }}
+    >
       {isLoading ? (
         <Loading />
       ) : (
-        moments.map((moment) => <MomentBox key={moment.id} moment={moment} />)
+        moments?.map((moment) => <MomentBox key={moment.id} moment={moment} />)
       )}
     </MomentWrap>
   );

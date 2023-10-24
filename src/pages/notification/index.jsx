@@ -10,6 +10,8 @@ import {
   where,
 } from "firebase/firestore";
 import { motion } from "framer-motion";
+import useNotification from "../../hooks/useNotification";
+import Loading from "../Loading";
 
 const Wrap = styled.div`
   width: 100%;
@@ -40,36 +42,17 @@ const TextBox = styled(motion.div)`
   border-radius: 10px;
 `;
 export default function NotificationPage() {
-  const user = auth.currentUser;
-  const [notifications, setNotifications] = useState([]);
+  const {
+    notifiQuery: { data, isLoading },
+  } = useNotification();
 
-  //알림 가져오기
-  useEffect(() => {
-    let unsubscribe;
-    if (user) {
-      let ref = collection(db, "notifications");
-      let notificationQuery = query(
-        ref,
-        where("userId", "==", user.uid),
-        orderBy("createdAt", "desc")
-      );
-      unsubscribe = onSnapshot(notificationQuery, (snapShot) => {
-        let dataObj = snapShot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        setNotifications(dataObj);
-      });
-    }
-    return () => {
-      unsubscribe && unsubscribe();
-    };
-  }, [user]);
+  if (isLoading) return <Loading />;
+
   return (
     <Wrap>
       <Notifibox>
-        {notifications.length > 0 ? (
-          notifications.map((noti) => (
+        {data?.length > 0 ? (
+          data.map((noti) => (
             <NotificationBox key={noti.id} notification={noti} />
           ))
         ) : (

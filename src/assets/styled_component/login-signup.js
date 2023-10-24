@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { motion } from "framer-motion";
 
 export const InputWrap = styled.div`
   display: flex;
@@ -33,7 +34,7 @@ export const Wrap = styled.div`
   align-items: center;
   flex-direction: column;
 `;
-export const Title = styled.div`
+export const Title = styled(motion.div)`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -54,7 +55,7 @@ export const Title = styled.div`
   }
 `;
 
-export const Form = styled.form`
+export const Form = styled(motion.form)`
   width: 50%;
   height: 80%;
   max-width: 350px;

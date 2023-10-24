@@ -10,10 +10,16 @@ import {
 const useNotification = (notification) => {
   const { uid } = useAuthContext();
   const queryClient = useQueryClient();
+
   //데이터 가져오기
-  const notifiQuery = useQuery(["notifications"], () => getNotifications(uid), {
-    enabled: !!uid,
-  });
+  const notifiQuery = useQuery(
+    ["notifications", uid],
+    () => getNotifications(uid),
+    {
+      staleTime: 2000,
+      enabled: !!uid,
+    }
+  );
 
   //알림 읽음
   const notifiUpdateQuery = useMutation(
@@ -45,7 +51,12 @@ const useNotification = (notification) => {
     },
   });
 
-  return { notifiQuery, notifiUpdateQuery, notifiDeleteQuery, notifiMoveQuery };
+  return {
+    notifiQuery,
+    notifiUpdateQuery,
+    notifiDeleteQuery,
+    notifiMoveQuery,
+  };
 };
 
 export default useNotification;

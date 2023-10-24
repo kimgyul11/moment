@@ -1,11 +1,10 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
-import Signup from "./pages/Signup";
-import Login from "./pages/Login";
+
 import { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
-
+import Signup from "./pages/user/Signup";
 import Loading from "./pages/Loading";
 import { useContext, useEffect, useState } from "react";
 import { auth } from "./utils/firebase";
@@ -23,6 +22,7 @@ import ProtectedRoute from "./components/protectedRoute";
 import { AuthContextProvider } from "./context/AuthContext";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
+import Login from "./pages/user/Login";
 
 const GlobalStyles = createGlobalStyle`
   ${reset};

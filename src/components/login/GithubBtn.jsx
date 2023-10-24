@@ -1,8 +1,8 @@
 import { GithubAuthProvider, signInWithPopup } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
-import { auth } from "../utils/firebase";
-import { Container, Logo } from "../assets/styled_component/social-btn";
+import { Container, Logo } from "../../assets/styled_component/social-btn";
+import { auth } from "../../utils/firebase";
 
 const GithubBtn = () => {
   const navigate = useNavigate();
@@ -16,7 +16,12 @@ const GithubBtn = () => {
     }
   };
   return (
-    <Container onClick={onclick} initial={{ scale: 0 }} animate={{ scale: 1 }}>
+    <Container
+      onClick={onClick}
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <Logo
         src="/github-log.svg"
         initial={{ rotate: 35, opacity: 0 }}

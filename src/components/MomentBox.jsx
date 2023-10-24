@@ -258,7 +258,7 @@ const MomentBox = ({ moment }) => {
 
       <Footer>
         <HashTagWrap>
-          {moment.hashTag.length > 0 &&
+          {moment?.hashTag?.length > 0 &&
             moment.hashTag.map((tag, idx) => (
               <HasTag
                 key={idx}
