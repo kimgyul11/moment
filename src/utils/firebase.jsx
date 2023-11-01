@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import {
+  addDoc,
   collection,
   deleteDoc,
   doc,
@@ -15,7 +16,12 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadString,
+} from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
@@ -36,34 +42,17 @@ export const db = getFirestore(app);
 export const onLogOut = async () => {
   await auth.signOut();
 };
-//무한스크롤
 
+//무한스크롤
 export const first = async () => {
-  //남은 게시글이 있는지 확인하는 변수
-  // const lastVisible = undefined;
-  const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length - 1];
-  console.log("last", lastVisible);
-  let q;
-  if (lastVisible === -1) {
-    return;
-  } else if (lastVisible) {
-    q = query(
-      collection(db, "moment"),
-      orderBy("createdAt", "desc"),
-      startAfter(pageParam),
-      limit(5)
-    );
-  } else {
-    //최초 페이지 렌더링
-    q = query(collection(db, "moment"), orderBy("createdAt", "desc"), limit(5));
-  }
   const first = query(
     collection(db, "moment"),
     orderBy("createdAt", "desc"),
     limit(5)
   );
-  const documentSnapshots = await getDocs(first);
-  return documentSnapshots.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+
+  const postSnap = await getDocs(first);
+  return postSnap;
 };
 
 export const next = async (pageParam) => {
@@ -73,8 +62,33 @@ export const next = async (pageParam) => {
     startAfter(pageParam),
     limit(5)
   );
+
   const nextSnap = await getDocs(next);
   return nextSnap;
+};
+
+//[모멘트]1.업로드하기
+export const uploadMoment = async (dataObj) => {
+  const docs = await addDoc(collection(db, "moment"), {
+    text: dataObj.text,
+    createdAt: dataObj.createdAt,
+    username: dataObj.username,
+    userId: dataObj.userId,
+    userPhoto: dataObj.userPhoto,
+    hashTag: dataObj.hashTag,
+  });
+
+  if (dataObj.imageFile) {
+    const storageRef = ref(
+      storage,
+      `moment/${dataObj?.user.uid}/${docs.id}-${dataObj.user?.displayName}`
+    );
+    const data = await uploadString(storageRef, dataObj.imageFile, "data_url");
+    const imageUrl = await getDownloadURL(data.ref);
+    await updateDoc(docs, {
+      photo: imageUrl,
+    });
+  }
 };
 
 //[알림]1.알림 가져오기

@@ -72,7 +72,7 @@ const MomentDetail = () => {
           <MomentBox moment={moment} />
           <CommentForm moment={moment} />
           <CommentWrap>
-            {moment.comment.length > 0 ? (
+            {moment?.comment ? (
               moment.comment
                 .slice(0)
                 .map((data) => (

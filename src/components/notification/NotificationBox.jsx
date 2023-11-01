@@ -1,7 +1,5 @@
-import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { db } from "../../utils/firebase";
 import dayjs from "dayjs";
 import useNotification from "../../hooks/useNotification";
 import { motion } from "framer-motion";

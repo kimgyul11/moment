@@ -18,6 +18,7 @@ import {
 import { toast } from "react-toastify";
 import { deleteObject, ref } from "firebase/storage";
 import FollowingButton from "./following/FollowingButton";
+import { useMutation, useQueryClient } from "react-query";
 const Box = styled.div`
   display: flex;
   flex-direction: column;
@@ -183,6 +184,7 @@ export const url =
   "https://e7.pngegg.com/pngimages/906/222/png-clipart-computer-icons-user-profile-avatar-french-people-computer-network-heroes-thumbnail.png";
 
 const MomentBox = ({ moment }) => {
+  const queryClient = useQueryClient();
   const user = auth.currentUser;
   const navigate = useNavigate();
 
@@ -233,9 +235,13 @@ const MomentBox = ({ moment }) => {
       });
     }
   };
-
+  const { mutate } = useMutation(onClickLike, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("moments");
+    },
+  });
   return (
-    <Box>
+    <Box ref={ref}>
       <Header>
         <Profile>
           <img src={moment.userPhoto ? moment.userPhoto : url} alt="profile" />
@@ -278,7 +284,7 @@ const MomentBox = ({ moment }) => {
             </EditBtnWrap>
           )}
           <ServiceBtnWrap>
-            <button onClick={onClickLike}>
+            <button onClick={() => mutate()}>
               {moment.likes && moment.likes.includes(user.uid) ? (
                 <BiSolidLike />
               ) : (

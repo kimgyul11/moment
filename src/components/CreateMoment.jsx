@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import styled from "styled-components";
-import { auth, db, storage } from "../utils/firebase";
+import { auth, uploadMoment } from "../utils/firebase";
 import { MdCancel } from "react-icons/md";
 import { BsImage } from "react-icons/bs";
 import {
@@ -13,6 +13,7 @@ import {
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { useModalContext } from "../context/ModalContext";
 import { toast } from "react-toastify";
+import { QueryClient, useMutation, useQueryClient } from "react-query";
 
 const Form = styled.form`
   display: flex;
@@ -191,31 +192,46 @@ const CreateMoment = () => {
   //submit핸들러
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (!user || isLoading || text.trim() === "" || text.length > 180) return;
+    if (!user || isLoading || text.trim() === "" || text.length > 180) return; //유효성 검사
     try {
       setLoading(true);
       //moment업로드
-      const docs = await addDoc(collection(db, "moment"), {
-        text,
+      const dataObj = {
+        text: text,
         createdAt: Date.now(),
         username: user.displayName || "익명유저",
         userId: user.uid,
         userPhoto: user.photoURL,
         hashTag: tags,
-      });
+        imageFile: imageFile || "",
+        user: user,
+      };
+      console.log(imageFile);
+      mutate(dataObj);
+      // await uploadMoment(dataObj, imageFile, user);
+
+      // const docs = await addDoc(collection(db, "moment"), {
+      //   text,
+      //   createdAt: Date.now(),
+      //   username: user.displayName || "익명유저",
+      //   userId: user.uid,
+      //   userPhoto: user.photoURL,
+      //   hashTag: tags,
+      // });
 
       //이미지 파일이 있다면 storage에 이미지를 업로드하고, collection을 업데이트한다.
-      if (imageFile) {
-        const storageRef = ref(
-          storage,
-          `moment/${user.uid}/${docs.id}-${user.displayName}`
-        );
-        const data = await uploadString(storageRef, imageFile, "data_url");
-        const imageUrl = await getDownloadURL(data.ref);
-        await updateDoc(docs, {
-          photo: imageUrl,
-        });
-      }
+      // if (imageFile) {
+      //   updateMoment(docs, imageFile, user);
+      //   // const storageRef = ref(
+      //   //   storage,
+      //   //   `moment/${user.uid}/${docs.id}-${user.displayName}`
+      //   // );
+      //   // const data = await uploadString(storageRef, imageFile, "data_url");
+      //   // const imageUrl = await getDownloadURL(data.ref);
+      //   // await updateDoc(docs, {
+      //   //   photo: imageUrl,
+      //   // });
+      // }
 
       //모든 입력창 초기화한다.
       setIsShow(false);
@@ -226,6 +242,15 @@ const CreateMoment = () => {
       setLoading(false);
     }
   };
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation(
+    (dataObj, imageFile, user) => uploadMoment(dataObj, imageFile, user),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("moments");
+      },
+    }
+  );
   return (
     <Form onSubmit={onSubmit}>
       {/* 이미지 박스 */}

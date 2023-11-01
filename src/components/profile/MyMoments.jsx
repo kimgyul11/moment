@@ -55,7 +55,6 @@ const MyMoments = () => {
       myUnsubscribe && myUnsubscribe();
     };
   }, [user]);
-  console.log(myMoments);
 
   return (
     <MyMomentsWrap>
