@@ -16,7 +16,7 @@ import {
   Title,
   Wrap,
 } from "../../assets/styled_component/login-signup";
-import { auth } from "../../utils/firebase";
+import { addNotification, auth } from "../../utils/firebase";
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const passwordRegex = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
@@ -80,9 +80,9 @@ const Signup = () => {
         enteredEmail,
         enteredPW
       );
-      console.log(credentials);
       await updateProfile(credentials.user, { displayName: enteredNN });
       navigate("/login");
+      addNotification(credentials.user);
       toast.success("🎉 환영합니다. ");
     } catch (e) {
       toast.error(e.code);

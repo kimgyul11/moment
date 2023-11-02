@@ -124,3 +124,15 @@ export const moveNotification = async (notification) => {
     });
   }
 };
+
+//[알림]5.알림 추가하기
+export const addNotification = async (user) => {
+  //회원가입 알림
+  await addDoc(collection(db, "notifications"), {
+    createdAt: Date.now(),
+    content: `${user.displayName}님 회원가입을 축하합니다.🎉`,
+    url: "",
+    isRead: false,
+    userId: user.uid,
+  });
+};

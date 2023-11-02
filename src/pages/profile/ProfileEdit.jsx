@@ -16,6 +16,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
+import { useAuthContext } from "../../context/AuthContext";
 
 const Wrap = styled.div`
   width: 100%;
@@ -57,6 +58,12 @@ const UserPhoto = styled.img`
 const AvatarInput = styled.input`
   display: none;
 `;
+
+const BtnWrap = styled.div`
+  width: 100%;
+  justify-content: center;
+  display: flex;
+`;
 const ImgAtt = styled.label`
   margin-top: 12px;
   cursor: pointer;
@@ -64,6 +71,18 @@ const ImgAtt = styled.label`
   padding: 6px;
   border-radius: 15px;
   color: #85d6d3;
+  font-size: 0.8rem;
+`;
+
+const ImgDel = styled.button`
+  margin-top: 12px;
+  margin-left: 12px;
+  cursor: pointer;
+  border: 1px solid #c22510;
+  background-color: #fff;
+  padding: 6px;
+  border-radius: 15px;
+  color: #c22510;
   font-size: 0.8rem;
 `;
 
@@ -105,15 +124,14 @@ const SubmitBtn = styled.input`
   padding: 6px;
 `;
 const ProfileEdit = () => {
-  const user = auth.currentUser;
+  const { user } = useAuthContext();
   const [myMoments, setMyMoments] = useState([]);
-  const [displayName, setDisplayName] = useState(user.displayName || "사용자");
-  const [userPhoto, setUserPhoto] = useState(user.photoURL);
+  const [displayName, setDisplayName] = useState(user?.displayName || "사용자");
+  const [userPhoto, setUserPhoto] = useState(user?.photoURL);
   const [newDisplayName, setNewDisplayName] = useState(displayName);
   const [isSubmiting, setIsSubmiting] = useState(false);
-
   const navigate = useNavigate();
-
+  //textInput
   const onChange = (e) => {
     const {
       target: { value },
@@ -121,7 +139,7 @@ const ProfileEdit = () => {
     setNewDisplayName(value);
   };
 
-  //이미지 변경
+  //imgInput
   const onChangeAvatar = async (e) => {
     const { files } = e.target;
     if (user && files && files.length === 1) {
@@ -130,23 +148,23 @@ const ProfileEdit = () => {
       const result = await uploadBytes(locationRef, file);
       const avatarUrl = await getDownloadURL(result.ref);
       setUserPhoto(avatarUrl);
-      await updateProfile(user, { photoURL: userPhoto });
-      toast.success("프로필 변경이 완료되었습니다!");
-      Promise.all(
-        myMoments.map(async (mo) => {
-          const ref = doc(db, "moment", mo.id);
-          await updateDoc(ref, { userPhoto: user.photoURL });
-          return mo; // 현재 요소를 그대로 반환
-        })
-      )
-        .then((updatedMoments) => {
-          setMyMoments(updatedMoments);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+      await updateProfile(user, { photoURL: avatarUrl });
+      if (myMoments.length > 0) {
+        Promise.all(
+          myMoments.map(async (mo) => {
+            const ref = doc(db, "moment", mo.id);
+            await updateDoc(ref, { userPhoto: user.photoURL });
+            return mo; // 현재 요소를 그대로 반환
+          })
+        )
+          .then((updatedMoments) => {
+            setMyMoments(updatedMoments);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
     }
-    console.log(user.photoURL);
   };
 
   //유저이름 변경,게시글 이름도 모두 변경
@@ -154,6 +172,24 @@ const ProfileEdit = () => {
     setIsSubmiting(true);
     e.preventDefault();
     if (user) {
+      if (userPhoto === "") {
+        await updateProfile(user, { photoURL: "" });
+        if (myMoments.length > 0) {
+          Promise.all(
+            myMoments.map(async (mo) => {
+              const ref = doc(db, "moment", mo.id);
+              await updateDoc(ref, { userPhoto: user.photoURL });
+              return mo; // 현재 요소를 그대로 반환
+            })
+          )
+            .then((updatedMoments) => {
+              setMyMoments(updatedMoments);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
+      }
       await updateProfile(user, {
         displayName: newDisplayName,
       });
@@ -202,7 +238,6 @@ const ProfileEdit = () => {
       myUnsubscribe && myUnsubscribe();
     };
   }, [user]);
-  console.log(myMoments);
   return (
     <Wrap>
       <ProfileWrap
@@ -224,7 +259,10 @@ const ProfileEdit = () => {
             </svg>
           )}
         </AvatarUpload>
-        <ImgAtt htmlFor="avatar">프로필 변경</ImgAtt>
+        <BtnWrap>
+          <ImgAtt htmlFor="avatar">프로필 변경</ImgAtt>
+          <ImgDel onClick={() => setUserPhoto("")}>프로필 삭제</ImgDel>
+        </BtnWrap>
         <AvatarInput
           type="file"
           id="avatar"
@@ -233,7 +271,7 @@ const ProfileEdit = () => {
         />
         <NickEditForm onSubmit={onSubmit}>
           <NicknameInput value={newDisplayName} onChange={onChange} />
-          <SubmitBtn type="submit" disabled={isSubmiting} value="수정" />
+          <SubmitBtn type="submit" disabled={isSubmiting} value="저장" />
         </NickEditForm>
         <Cancel onClick={() => navigate(-1)}>
           <ImCancelCircle />
