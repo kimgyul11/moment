@@ -1,17 +1,8 @@
 import styled from "styled-components";
-import { auth, db } from "../../utils/firebase";
-import { useEffect, useState } from "react";
 import NotificationBox from "../../components/notification/NotificationBox";
-import {
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
 import { motion } from "framer-motion";
 import useNotification from "../../hooks/useNotification";
-import Loading from "../Loading";
+import Loading from "@shared/Loading";
 
 const Wrap = styled.div`
   width: 100%;

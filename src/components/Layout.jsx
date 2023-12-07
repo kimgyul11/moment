@@ -1,11 +1,10 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
-import Navbar from "./Navbar";
+import Navbar from "@shared/Navbar";
 import { useModalContext } from "../context/ModalContext";
-import Modal from "./Modal";
-import CreateMoment from "./CreateMoment";
+import Modal from "@shared/Modal";
+import CreateMoment from "@components/moment/CreateMoment";
 import { auth } from "../utils/firebase";
-import { useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 
 const Wrap = styled.div`

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Moment from "../components/Moment";
+import Moment from "@components/moment/Moment";
 
 const Wrap = styled.div`
   width: 0%;

@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { useModalContext } from "../context/ModalContext";
 import { GrClose } from "react-icons/gr";
 import { AnimatePresence, motion } from "framer-motion";
+import { useModalContext } from "@context/ModalContext";
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;

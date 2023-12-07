@@ -1,15 +1,16 @@
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useModalContext } from "../context/ModalContext";
+import { useModalContext } from "@context/ModalContext";
 import { BsPencil } from "react-icons/bs";
 import { BiUserCircle, BiLogOut, BiSolidHome } from "react-icons/bi";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { LiaSearchSolid } from "react-icons/lia";
 import { toast } from "react-toastify";
 
-import { useAuthContext } from "../context/AuthContext";
-import useNotification from "../hooks/useNotification";
-import NotificationCnt from "./notification/NotificationCnt";
+import { useAuthContext } from "@context/AuthContext";
+
+import NotificationCnt from "@components/notification/NotificationCnt";
+import useNotification from "@hooks/useNotification";
 
 const Nav = styled.div`
   min-width: 60px;

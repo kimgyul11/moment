@@ -1,12 +1,12 @@
 import { doc, onSnapshot } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { db } from "../../utils/firebase";
+import { db } from "@utils/firebase";
 import styled from "styled-components";
-import MomentBox from "../../components/MomentBox";
-import CommentForm from "../../components/comment/CommentForm";
-import CommentBox from "../../components/comment/CommentBox";
-import Loading from "../Loading";
+import MomentBox from "@components/moment/MomentBox";
+import CommentForm from "@components/comment/CommentForm";
+import CommentBox from "@components/comment/CommentBox";
+import Loading from "@shared/Loading";
 import { motion } from "framer-motion";
 
 const Wrap = styled.div`

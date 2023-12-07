@@ -1,14 +1,11 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import Layout from "./components/Layout";
-import Home from "./pages/Home";
 
 import { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
 import Signup from "./pages/user/Signup";
-import Loading from "./pages/Loading";
-import { useContext, useEffect, useState } from "react";
+import Loading from "@shared/Loading";
+import { useEffect, useState } from "react";
 import { auth } from "./utils/firebase";
-import { ModalContextProvider } from "./context/ModalContext";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,6 +20,7 @@ import { AuthContextProvider } from "./context/AuthContext";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import Login from "./pages/user/Login";
+import { router } from "./components/router";
 
 const GlobalStyles = createGlobalStyle`
   ${reset};
@@ -37,38 +35,6 @@ const GlobalStyles = createGlobalStyle`
     color: #000;
   }
 `;
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: (
-      <ProtectedRoute>
-        <Layout />
-      </ProtectedRoute>
-    ),
-    children: [
-      {
-        path: "",
-        element: <Home />,
-      },
-      {
-        path: "/profile",
-        element: <Profile />,
-      },
-      { path: "/profile/edit", element: <ProfileEdit /> },
-      {
-        path: "/search",
-        element: <Search />,
-      },
-      { path: "/search/:id", element: <Search /> },
-      { path: "/moment/edit/:id", element: <MomentEdit /> },
-      { path: "/moment/:id", element: <MomentDetail /> },
-      { path: "/notification", element: <NotificationPage /> },
-    ],
-  },
-  { path: "/sign-up", element: <Signup /> },
-  { path: "/login", element: <Login /> },
-]);
 
 function App() {
   const queryClient = new QueryClient();

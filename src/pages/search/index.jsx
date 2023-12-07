@@ -7,9 +7,9 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { db } from "../../utils/firebase";
+import { db } from "@utils/firebase";
 import { useParams } from "react-router-dom";
-import MomentBox from "../../components/MomentBox";
+import MomentBox from "@components/moment/MomentBox";
 import { motion } from "framer-motion";
 
 const Wrap = styled.div`

@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 
 import { BiSolidLike, BiLike, BiCommentDetail } from "react-icons/bi";
 
-import { auth, db, storage } from "../utils/firebase";
+import { auth, db, storage } from "@utils/firebase";
 import { useNavigate } from "react-router-dom";
 import {
   addDoc,
@@ -17,8 +17,8 @@ import {
 } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { deleteObject, ref } from "firebase/storage";
-import FollowingButton from "./following/FollowingButton";
-import { useMutation, useQueryClient } from "react-query";
+import FollowingButton from "@components/following/FollowingButton";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 const Box = styled.div`
   display: flex;
   flex-direction: column;
@@ -235,6 +235,7 @@ const MomentBox = ({ moment }) => {
       });
     }
   };
+
   const { mutate } = useMutation(onClickLike, {
     onSuccess: () => {
       queryClient.invalidateQueries("moments");

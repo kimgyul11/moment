@@ -1,18 +1,11 @@
-import {
-  collection,
-  limit,
-  onSnapshot,
-  orderBy,
-  query,
-} from "firebase/firestore";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import styled from "styled-components";
-import { auth, db, first, next } from "../utils/firebase";
+import { first, next } from "@utils/firebase";
 import MomentBox from "./MomentBox";
-import Loading from "../pages/Loading";
+import Loading from "@shared/Loading";
 import { motion } from "framer-motion";
 import { useInfiniteQuery } from "react-query";
-import useIntersectionObserver from "../hooks/useIntersectionObserver";
+import useIntersectionObserver from "@hooks/useIntersectionObserver";
 
 const MomentWrap = styled(motion.div)`
   width: 100%;
@@ -67,8 +60,6 @@ const Moment = () => {
               page.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
             )
             .map((moment) => <MomentBox key={moment.id} moment={moment} />)
-          // .map((moment) => <MomentBox key={moment.id} post={moment} />)
-          // moments?.map((moment) => <MomentBox key={moment.id} moment={moment} />)
         )}
         <Target ref={ref} />
         <Last>마지막 게시글입니다!</Last>
